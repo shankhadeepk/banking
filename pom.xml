@@ -13,10 +13,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<swagger.version>2.0.10</swagger.version>
 		<java.version>1.8</java.version>
-		<sl4j.version>1.7.28</sl4j.version>
-		<tomcat.version>8.0.48</tomcat.version>
 		<jetty.version>9.4.21.v20190926</jetty.version>
-		<junit.version>5.6.0-M1</junit.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.containers/jersey-container-servlet-core -->
@@ -74,22 +72,15 @@
 		<!-- H2 Database -->
 		<!-- Junit -->
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>${junit.version}</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Junit -->
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -121,6 +112,26 @@
 				<configuration>
 					<mainClass>com.revolut.banking.BankingStarter</mainClass>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/java</source>
+								<source>src/main/resources</source>
+								<source>src/main/test</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
