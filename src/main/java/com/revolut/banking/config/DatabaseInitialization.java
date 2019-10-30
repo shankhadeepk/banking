@@ -9,7 +9,7 @@ import org.h2.jdbcx.JdbcConnectionPool;
 public class DatabaseInitialization {
 	private static JdbcConnectionPool connPool = null;
 	DataSource dataSource = null;
-	public static final String DB_URL = "jdbc:h2:~/test";
+	public static final String DB_URL = "jdbc:h2:mem:banking;DB_CLOSE_DELAY=-1";
 
 	private static JdbcConnectionPool createConnectionPool() {		
 		connPool = JdbcConnectionPool.create(DB_URL,"sa","sa");
