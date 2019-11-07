@@ -1,35 +1,144 @@
 package com.revolut.banking.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import com.revolut.banking.config.DatabaseInitialization;
-import com.revolut.banking.model.BankAccount;
+import org.apache.log4j.Logger;
 
-public class BankingDaoImpl extends BankingDao{
-	
+import com.revolut.banking.config.AppConstants;
+import com.revolut.banking.config.DatabaseInitialization;
+import com.revolut.banking.exceptions.GeneralBankingException;
+import com.revolut.banking.model.BankAccount;
+import com.revolut.banking.resources.BankingResource;
+
+public class BankingDaoImpl implements BankingDao {
+
+	static Logger log = Logger.getLogger(BankingResource.class.getName());
+
 	private final Connection connection;
-	private static final String GET_ACC="SELECT * FROM ANKACCOUNT WHERE BANKACCID = ?";
-	
-	public BankingDaoImpl() throws SQLException {		
-		this.connection = DatabaseInitialization.getConnection();			
+	private static final String GET_ACC = "SELECT * FROM BANKACCOUNT WHERE SSID = ?";
+	private static final String NEW_ACC = "INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE) VALUES(?,?,?,?,?,?)";
+	private static final String DELETE_ACC = "DELETE FROM BANKACCOUNT WHERE SSID = ?";
+
+	public BankingDaoImpl() throws SQLException {
+		this.connection = DatabaseInitialization.getConnection();
 	}
-	
-	public synchronized Set<BankAccount> getAccounts(long bankAccount){
-		PreparedStatement preparedStatement=null;
-		ResultSet result=null;
+
+	@Override
+	public synchronized List<BankAccount> getAccounts(String SSID) throws GeneralBankingException {
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
+		List<BankAccount> accounts = new ArrayList<BankAccount>();
+		String message = null;
+
 		try {
-			preparedStatement=this.connection.prepareStatement(GET_ACC);
-			preparedStatement.setLong(1, bankAccount);
-			result=preparedStatement.executeQuery();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			preparedStatement = this.connection.prepareStatement(GET_ACC);
+			preparedStatement.setString(1, SSID);
+			result = preparedStatement.executeQuery();
+
+			while (result.next()) {
+				BankAccount account = createAccountObjFromResult(result);
+				accounts.add(account);
+			}
+		} catch (SQLException exception) {
+			message = "Error while getting accounts details";
+			log.error(message, exception);
+			throw new GeneralBankingException(message);
+
+		} finally {
+			try {
+				DatabaseInitialization.closeConnection();
+			} catch (SQLException e) {
+				message = "Error while getting accounts details, closing connection";
+				log.error(message, e);
+				throw new GeneralBankingException(message);
+			}
 		}
-		return (Set<BankAccount>) result;		
+
+		return accounts;
+	}
+
+	@Override
+	public synchronized boolean createNewAccount(BankAccount account) throws GeneralBankingException {
+		PreparedStatement preparedStatement = null;
+		String message=null;
+
+		try {
+			preparedStatement = this.connection.prepareStatement(NEW_ACC);
+
+			preparedStatement.setString(1, account.getSSID());
+			preparedStatement.setString(2, account.getBankAccHolderName());
+			preparedStatement.setBigDecimal(3, account.getBalance());
+			preparedStatement.setString(4, account.getEmailId());
+			preparedStatement.setString(5, account.getContact());
+			preparedStatement.setString(6, account.getStrAccountType());
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			message = "Error occured while creating account";
+			log.error(message, e);
+			throw new GeneralBankingException(message);
+		}finally {
+			try {
+				DatabaseInitialization.closeConnection();
+			} catch (SQLException e) {
+				message = "Error while creating accounts details, closing connection";
+				log.error(message, e);
+				throw new GeneralBankingException(message);
+			}
+		}
+
+		return true;
+	}
+
+	private synchronized BankAccount createAccountObjFromResult(ResultSet resultSet) throws GeneralBankingException {
+		BankAccount account = null;
+
+		try {
+			account = new BankAccount(resultSet.getInt("BANKACCID"), resultSet.getString("BANKACCHOLDERNAME"),
+					resultSet.getBigDecimal("BALANCE"), resultSet.getString("CURRENCYCODE"),
+					resultSet.getString("EMAILID"), resultSet.getString("SSID"), resultSet.getString("CONTACT"));
+
+			account.setStrAccountType(resultSet.getString("ACCOUNTTYPE"));
+			account.setStrStatus(resultSet.getString("STATUS"));
+			account.setCreationDate(
+					resultSet.getTimestamp("CREATE_DATE").toLocalDateTime().format(AppConstants.dateFormatter));
+		} catch (SQLException e) {
+			String message = "Error occurred while reading data from resultSet";
+			log.error(message, e);
+			throw new GeneralBankingException(message);
+		}
+		return account;
+	}
+
+	@Override
+	public synchronized boolean deleteBankAccountsAsPerSSID(String SSID) throws GeneralBankingException {
+		PreparedStatement preparedStatement = null;
+		String message=null;
+		
+		try {
+		preparedStatement = this.connection.prepareStatement(DELETE_ACC);
+		preparedStatement.setString(1, SSID);
+		preparedStatement.execute();
+		} catch (SQLException e) {
+			message = "Error occured while creating account";
+			log.error(message, e);
+			throw new GeneralBankingException(message);
+		}finally {
+			try {
+				DatabaseInitialization.closeConnection();
+			} catch (SQLException e) {
+				message = "Error while creating accounts details, closing connection";
+				log.error(message, e);
+				throw new GeneralBankingException(message);
+			}
+		}
+		return true;
 	}
 
 }

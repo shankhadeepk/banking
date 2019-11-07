@@ -1,6 +1,8 @@
 package com.revolut.banking.model;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,9 +33,15 @@ public class BankAccount {
 	@JsonProperty(required=true)
 	private String strAccountType;
 	
+	private String strStatus;
+	
 	private BankAccType accountType;
 	
 	private BankAccountStatus status;
+	
+	private String creationDate;
+	
+	private String modifiedDate;
 
 	public BankAccount(long bankAccId, String bankAccHolderName, BigDecimal balance, String currencyCode,
 			String emailId, String sSID, String contact) {
@@ -61,7 +69,7 @@ public class BankAccount {
 	public BankAccount() {
 		super();
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -166,14 +174,46 @@ public class BankAccount {
 		}
 		this.setAccountType(this.accountType);
 	}
+	
+	public String getStrStatus() {
+		return strStatus;
+	}
+
+	public void setStrStatus(String strStatus) {
+		this.strStatus = strStatus;
+		
+		if(this.strStatus.toUpperCase().contains("A")) {
+			this.status=BankAccountStatus.ACTIVE;
+		}else if(this.strStatus.toUpperCase().contains("D")) {
+			this.status=BankAccountStatus.DORMANT;
+		}
+	}
+	
+	
+	public String getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(String modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
 
 	@Override
 	public String toString() {
 		return "BankAccount [bankAccId=" + bankAccId + ", bankAccHolderName=" + bankAccHolderName + ", balance="
 				+ balance + ", currencyCode=" + currencyCode + ", emailId=" + emailId + ", SSID=" + SSID + ", contact="
-				+ contact + ", strAccountType=" + strAccountType + ", accountType=" + accountType + ", status=" + status
-				+ "]";
+				+ contact + ", strAccountType=" + strAccountType + ", strStatus=" + strStatus + ", accountType="
+				+ accountType + ", status=" + status + "]";
 	}
+	
 	
 	
 }

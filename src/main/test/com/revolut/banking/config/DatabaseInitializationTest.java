@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,7 +26,7 @@ public class DatabaseInitializationTest {
 	private static final String select="SELECT * FROM EMP";
 	private static final String dropEmployee="DROP TABLE EMP";
 	
-	@BeforeClass
+	@Before
 	public static void setUp() {
 		PreparedStatement preparedStatement=null;
 		try {
@@ -36,7 +38,7 @@ public class DatabaseInitializationTest {
 		}
 	}
 	
-	@AfterClass
+	@After
 	public static void destroy() {
 		PreparedStatement preparedStatement=null;
 		try {

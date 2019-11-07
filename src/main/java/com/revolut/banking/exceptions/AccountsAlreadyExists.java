@@ -8,23 +8,18 @@ import javax.ws.rs.ext.Provider;
 import org.apache.log4j.Logger;
 
 import com.revolut.banking.model.BankingError;
-import com.revolut.banking.resources.BankingResource;
 
 @Provider
-public class AccountNotFoundException extends Exception
-				implements ExceptionMapper<AccountNotFoundException>{
+public class AccountsAlreadyExists extends Exception implements ExceptionMapper<AccountsAlreadyExists> {
 	
-	static Logger log = Logger.getLogger(AccountNotFoundException.class.getName());
+	static Logger log = Logger.getLogger(AccountsAlreadyExists.class.getName());
+	
+	public AccountsAlreadyExists() {
+		super("Account is already present");
+	}
 
-	public AccountNotFoundException() {
-		super("The account is not present");
-	}
-	
-	public AccountNotFoundException(String message) {
-		super(message);
-	}
 	@Override
-	public Response toResponse(AccountNotFoundException exception) {
+	public Response toResponse(AccountsAlreadyExists exception) {
 		log.error(exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.NOT_FOUND.name());
 		return Response.status(Response.Status.NOT_FOUND).entity(error).type(MediaType.APPLICATION_JSON).build();

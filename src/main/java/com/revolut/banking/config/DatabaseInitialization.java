@@ -37,10 +37,10 @@ public class DatabaseInitialization {
 	
 	private static JdbcConnectionPool connPool = null;
 	DataSource dataSource = null;
-	public static final String DB_URL = "jdbc:h2:mem:banking;DB_CLOSE_DELAY=-1";
+	public static final String DB_URL = "jdbc:h2:~/banking";
 
 	private static JdbcConnectionPool createConnectionPool() {		
-		connPool = JdbcConnectionPool.create(DB_URL,"sa","sa");
+		connPool = JdbcConnectionPool.create(DB_URL,"sa","");
 		connPool.setMaxConnections(100);
 		return connPool;
 	}

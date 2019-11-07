@@ -10,17 +10,17 @@ import org.apache.log4j.Logger;
 import com.revolut.banking.model.BankingError;
 
 @Provider
-public class InterruptedExcMapper extends Exception 
-		implements ExceptionMapper<InterruptedException>{
+public class GeneralBankingException extends Exception
+				implements ExceptionMapper<GeneralBankingException>{
 	
-	static Logger log = Logger.getLogger(InterruptedExcMapper.class.getName());
-	
-	InterruptedExcMapper(){
-		super("exception occurred due to adding data to queue");
+	static Logger log = Logger.getLogger(GeneralBankingException.class.getName());
+
+	public GeneralBankingException(String message) {
+		super(message);
 	}
 
 	@Override
-	public Response toResponse(InterruptedException exception) {
+	public Response toResponse(GeneralBankingException exception) {
 		log.error(exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.INTERNAL_SERVER_ERROR.name());
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).type(MediaType.APPLICATION_JSON).build();
