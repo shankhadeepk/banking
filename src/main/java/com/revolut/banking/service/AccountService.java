@@ -2,8 +2,8 @@ package com.revolut.banking.service;
 
 import java.sql.SQLException;
 
-import com.revolut.banking.dao.BankingDao;
-import com.revolut.banking.dao.BankingDaoImpl;
+import com.revolut.banking.dao.BankingAccountDao;
+import com.revolut.banking.dao.BankingAccountDaoImpl;
 import com.revolut.banking.exceptions.AccountsAlreadyExists;
 import com.revolut.banking.exceptions.BadAccountRequestException;
 import com.revolut.banking.exceptions.GeneralBankingException;
@@ -13,10 +13,10 @@ import com.revolut.banking.model.BankAccountStatus;
 
 public class AccountService {
 
-	private final BankingDao bankingDao;
+	private final BankingAccountDao bankingDao;
 
 	public AccountService() throws SQLException {
-		bankingDao = new BankingDaoImpl();
+		bankingDao = new BankingAccountDaoImpl();
 	}
 
 	public synchronized BankAccount createAccount(BankAccount account) throws GeneralBankingException {

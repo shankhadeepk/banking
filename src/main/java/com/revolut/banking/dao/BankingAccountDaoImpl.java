@@ -17,7 +17,7 @@ import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 import com.revolut.banking.resources.BankingResource;
 
-public class BankingDaoImpl implements BankingDao {
+public class BankingAccountDaoImpl implements BankingAccountDao {
 
 	static Logger log = Logger.getLogger(BankingResource.class.getName());
 
@@ -26,7 +26,7 @@ public class BankingDaoImpl implements BankingDao {
 	private static final String NEW_ACC = "INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE) VALUES(?,?,?,?,?,?)";
 	private static final String DELETE_ACC = "DELETE FROM BANKACCOUNT WHERE SSID = ?";
 
-	public BankingDaoImpl() throws SQLException {
+	public BankingAccountDaoImpl() throws SQLException {
 		this.connection = DatabaseInitialization.getConnection();
 	}
 

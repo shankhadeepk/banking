@@ -4,14 +4,15 @@ public class BankingTransactionnResponse {
 	
 	private String transactionId;
 	private String typeOfTransaction;
-	private String fromAccount;
-	private String toAccount;
+	private long fromAccount;
+	private long toAccount;
 	private String fromAccHolderName;
 	private String toAccountHolderName;
-	private String dateOfCreation;			
+	private String dateOfCreation;
+	private String dateOfModification;
 	
-	public BankingTransactionnResponse(String transactionId, String typeOfTransaction, String fromAccount,
-			String toAccount, String fromAccHolderName, String toAccountHolderName, String dateOfCreation) {
+	public BankingTransactionnResponse(String transactionId, String typeOfTransaction, long fromAccount,
+			long toAccount, String fromAccHolderName, String toAccountHolderName) {
 		super();
 		this.transactionId = transactionId;
 		this.typeOfTransaction = typeOfTransaction;
@@ -19,7 +20,6 @@ public class BankingTransactionnResponse {
 		this.toAccount = toAccount;
 		this.fromAccHolderName = fromAccHolderName;
 		this.toAccountHolderName = toAccountHolderName;
-		this.dateOfCreation = dateOfCreation;
 	}
 	public BankingTransactionnResponse(String transactionId, String typeOfTransaction, String fromAccHolderName, String dateOfCreation) {
 		super();
@@ -49,16 +49,17 @@ public class BankingTransactionnResponse {
 	public void setTypeOfTransaction(String typeOfTransaction) {
 		this.typeOfTransaction = typeOfTransaction;
 	}
-	public String getFromAccount() {
+	
+	public long getFromAccount() {
 		return fromAccount;
 	}
-	public void setFromAccount(String fromAccount) {
+	public void setFromAccount(long fromAccount) {
 		this.fromAccount = fromAccount;
 	}
-	public String getToAccount() {
+	public long getToAccount() {
 		return toAccount;
 	}
-	public void setToAccount(String toAccount) {
+	public void setToAccount(long toAccount) {
 		this.toAccount = toAccount;
 	}
 	public String getDateOfCreation() {
@@ -67,7 +68,17 @@ public class BankingTransactionnResponse {
 	public void setDateOfCreation(String dateOfCreation) {
 		this.dateOfCreation = dateOfCreation;
 	}
+	public String getFromAccHolderName() {
+		return fromAccHolderName;
+	}
+	public String getToAccountHolderName() {
+		return toAccountHolderName;
+	}
+	public String getDateOfModification() {
+		return dateOfModification;
+	}
+	public void setDateOfModification(String dateOfModification) {
+		this.dateOfModification = dateOfModification;
+	}	
 	
-	
-
 }

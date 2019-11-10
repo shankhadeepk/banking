@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.revolut.banking.config.DatabaseInitialization;
 import com.revolut.banking.config.DatabaseInitializationTest;
+import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 
 public class BankingDaoImplTest {
@@ -29,13 +30,13 @@ public class BankingDaoImplTest {
 
 	@Test
 	public void testGetAccounts() {
-		BankingDao bankingDao=null;
+		BankingAccountDao bankingDao=null;
 		List<BankAccount> bankAccounts=null;
 		try {
 			BankAccount bankAccount =new BankAccount("Shankhadeep", new BigDecimal(2000.00), "GBP", "shankha@gmail.com" , "M87887", "+917878787789");
 			bankAccount.setStrAccountType("CURR");
 			
-			bankingDao=new BankingDaoImpl();			
+			bankingDao=new BankingAccountDaoImpl();			
 			bankingDao.createNewAccount(bankAccount);
 			
 			bankAccount = new BankAccount("Shankhadeep", new BigDecimal(2000.00), "GBP", "shankha@gmail.com" , "M87887", "+917878787789");
@@ -50,6 +51,8 @@ public class BankingDaoImplTest {
 			bankingDao.deleteBankAccountsAsPerSSID("M87887");
 			
 		} catch (SQLException e) {
+			log.error("error while doing database operation ",e);
+		} catch (GeneralBankingException e) {
 			log.error("error while doing database operation ",e);
 		}finally{
 			try {

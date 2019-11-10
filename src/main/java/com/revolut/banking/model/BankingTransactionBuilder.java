@@ -8,11 +8,10 @@ public class BankingTransactionBuilder {
 	
 	private String transactionId;
 	private String typeOfTransaction;
-	private String fromAccount;
-	private String toAccount;
+	private long fromAccount;
+	private long toAccount;
 	private String fromAccHolderName;
 	private String toAccountHolderName;
-	private String dateOfCreation;
 	
 	public BankingTransactionBuilder setTransactionId() {
 		StringBuilder transactId=new StringBuilder();
@@ -26,19 +25,19 @@ public class BankingTransactionBuilder {
 		this.typeOfTransaction=typeOfTransaction;
 		return this;
 	}
-	public BankingTransactionBuilder setFromAccount(String fromAccount) {
-		this.fromAccount=fromAccount;
-		return this;
-	}
-	public BankingTransactionBuilder setToAccount(String toAccount) {
-		this.toAccount = toAccount;
-		return this;
-	}
-	public BankingTransactionBuilder setDateOfCreation() {
-		this.dateOfCreation=LocalDateTime.now().format(AppConstants.dateFormatterTransact);		
-		return this;
-	}
 	
+	public long getFromAccount() {
+		return fromAccount;
+	}
+	public void setFromAccount(long fromAccount) {
+		this.fromAccount = fromAccount;
+	}
+	public long getToAccount() {
+		return toAccount;
+	}
+	public void setToAccount(long toAccount) {
+		this.toAccount = toAccount;
+	}
 	public BankingTransactionBuilder setFromAccHolderName(String fromAccHolderName) {
 		this.fromAccHolderName = fromAccHolderName;
 		return this;
@@ -48,7 +47,7 @@ public class BankingTransactionBuilder {
 		return this;
 	}
 	public BankingTransactionnResponse build() {
-		return new BankingTransactionnResponse(transactionId,typeOfTransaction,fromAccount,toAccount,fromAccHolderName,toAccountHolderName,dateOfCreation);
+		return new BankingTransactionnResponse(transactionId,typeOfTransaction,fromAccount,toAccount,fromAccHolderName,toAccountHolderName);
 	}
 
 }

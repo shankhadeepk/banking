@@ -59,8 +59,8 @@ public class BankingResource {
 							=new BankingTransactionBuilder()
 							.setTransactionId()
 							.setFromAccHolderName(bAccount.getBankAccHolderName())
-							.setTypeOfTransaction("CREATE ACCOUNT")
-							.setDateOfCreation().build();
+							.setTypeOfTransaction("CREATE_ACCOUNT")
+							.build();
 		transactionService.createTransaction();
 		//Check if the account with the details already exists.
 		accountsService.validateAccount(bAccount);

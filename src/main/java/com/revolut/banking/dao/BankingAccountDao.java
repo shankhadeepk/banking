@@ -7,7 +7,7 @@ import java.util.Set;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 
-public interface BankingDao {
+public interface BankingAccountDao {
 	
 	public List<BankAccount> getAccounts(String SSID) throws GeneralBankingException ;
 	public boolean createNewAccount(BankAccount account) throws GeneralBankingException;
