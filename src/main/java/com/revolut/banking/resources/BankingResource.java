@@ -2,9 +2,11 @@ package com.revolut.banking.resources;
 
 import java.sql.SQLException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,8 +28,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiResponse;
 
-@Path("/account")
-@Api(value = "/account", description = "Service for banking")
+@Path("/")
+@Api(value = "/", description = "Service for banking")
 public class BankingResource {
 
 	static Logger log = Logger.getLogger(BankingResource.class.getName());
@@ -48,8 +50,10 @@ public class BankingResource {
 		return "success";
 	}
 
-	@Path("/")
+	@Path("/account")
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
 	@ApiResponse(code=200,message="Account created successfully")
 	})
@@ -66,6 +70,6 @@ public class BankingResource {
 		accountsService.validateAccount(bAccount);
 		accountsService.createAccount(bAccount);
 		
-		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
+		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
 	}
 }

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.revolut.banking.exceptions.GeneralBankingException;
 
 public class BankAccount {
 	
@@ -44,8 +45,9 @@ public class BankAccount {
 	private String modifiedDate;
 
 	public BankAccount(long bankAccId, String bankAccHolderName, BigDecimal balance, String currencyCode,
-			String emailId, String sSID, String contact) {
+			String emailId, String sSID, String contact) throws GeneralBankingException {
 		super();
+		if(currencyCode.length()!=3) throw new GeneralBankingException("The currency code is wrong");
 		this.bankAccId = bankAccId;
 		this.bankAccHolderName = bankAccHolderName;
 		this.balance = balance;
@@ -56,10 +58,11 @@ public class BankAccount {
 	}
 
 	public BankAccount(String bankAccHolderName, BigDecimal balance, String currencyCode, String emailId, String sSID,
-			String contact) {
+			String contact) throws GeneralBankingException {
 		super();
+		if(currencyCode.length()!=3) throw new GeneralBankingException("The currency code is wrong");
 		this.bankAccHolderName = bankAccHolderName;
-		this.balance = balance;
+		this.balance = balance;		
 		this.currencyCode = currencyCode;
 		this.emailId = emailId;
 		SSID = sSID;
