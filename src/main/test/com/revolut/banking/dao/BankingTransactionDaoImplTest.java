@@ -35,7 +35,7 @@ public class BankingTransactionDaoImplTest {
 		try {
 			daoImpl=new BankingTransactionDaoImpl();
 			builder=new BankingTransactionBuilder();
-			assertTrue(daoImpl.saveTransaction(builder.setTransactionId().setFromAccHolderName("Shankhadeep").setTypeOfTransaction("CREATE").build()));
+			assertNotNull(daoImpl.saveTransaction(builder.setTransactionId().setFromAccHolderName("Shankhadeep").setTypeOfTransaction("CREATE").build()));
 		} catch (GeneralBankingException e) {
 			log.error("Error while creating new transaction",e);
 		} catch (SQLException e) {

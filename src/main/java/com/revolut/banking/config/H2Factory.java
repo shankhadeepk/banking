@@ -14,7 +14,6 @@ public class H2Factory {
 	static Logger log = Logger.getLogger(H2Factory.class.getName());
 
 	private static JdbcConnectionPool connPool = null;
-	public static final String DB_URL = "jdbc:h2:mem:banking;DB_CLOSE_DELAY=-1";
 
 	public static void populateData(){
 		Connection conn = null;
@@ -37,7 +36,7 @@ public class H2Factory {
 		}
 	}
 	private static JdbcConnectionPool createConnectionPool(){		
-		connPool = JdbcConnectionPool.create(DB_URL,"sa","");
+		connPool = JdbcConnectionPool.create(AppConstants.DB_URL,AppConstants.DB_USER,AppConstants.DB_PWD);
 		log.info("Connection established");
 		connPool.setMaxConnections(100);
 		return connPool;

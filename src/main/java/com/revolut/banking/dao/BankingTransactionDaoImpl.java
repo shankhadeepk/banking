@@ -29,11 +29,13 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	}
 
 	@Override
-	public synchronized boolean saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
+	public synchronized BankingTransactionnResponse saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		String message=null;
+		List<BankingTransactionnResponse> transactions=null;
 
 		try {
+			String transactionId=transaction.getTransactionId();
 			preparedStatement = this.connection.prepareStatement(NEW_TRANSACT);
 
 			preparedStatement.setString(1, transaction.getTransactionId());
@@ -43,6 +45,9 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			preparedStatement.setString(5, transaction.getFromAccHolderName());
 			preparedStatement.setString(6, transaction.getToAccountHolderName());
 			preparedStatement.executeUpdate();
+
+			transactions=getTransactions(transactionId);
+
 		} catch (SQLException e) {
 			message = "Error occured while creating transaction";
 			log.error(message, e);
@@ -57,7 +62,10 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			 */
 		}
 
-		return true;
+		if(transactions!=null)
+			return transactions.get(0);
+		else
+			return null;
 	}
 	
 	public synchronized List<BankingTransactionnResponse> getTransactions(String transactionId) throws GeneralBankingException {

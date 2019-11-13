@@ -22,6 +22,11 @@ public class AccountService {
 		return account;
 	}
 
+	public synchronized boolean deleteAccount(String accountId) throws GeneralBankingException {
+		bankingDao.deleteBankAccountsAsPerAccountId(accountId);
+		return true;
+	}
+
 	public synchronized boolean validateAccount(BankAccount bankAccount) throws AccountsAlreadyExists, BadAccountRequestException, GeneralBankingException {
 		if(bankAccount.getSSID().isEmpty() || bankAccount.getEmailId().isEmpty() || bankAccount.getBankAccHolderName().isEmpty()) {
 			throw new BadAccountRequestException();

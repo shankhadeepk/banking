@@ -22,6 +22,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 	private static final String GET_ACC = "SELECT * FROM BANKACCOUNT WHERE SSID = ?";
 	private static final String NEW_ACC = "INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE) VALUES(?,?,?,?,?,?)";
 	private static final String DELETE_ACC = "DELETE FROM BANKACCOUNT WHERE SSID = ?";
+	private static final String DELETE_ACC_ACCID = "DELETE FROM BANKACCOUNT WHERE BANKACCID = ?";
 
 	public BankingAccountDaoImpl() throws SQLException {
 		this.connection = H2Factory.getConnection();
@@ -131,6 +132,25 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			 * message = "Error while creating accounts details, closing connection";
 			 * log.error(message, e); throw new GeneralBankingException(message); }
 			 */
+		}
+		return true;
+	}
+
+	@Override
+	public synchronized boolean deleteBankAccountsAsPerAccountId(String accountId) throws GeneralBankingException {
+		PreparedStatement preparedStatement = null;
+		String message=null;
+
+		try {
+			preparedStatement = this.connection.prepareStatement(DELETE_ACC_ACCID);
+			preparedStatement.setString(1, accountId);
+			preparedStatement.execute();
+		} catch (SQLException e) {
+			message = "Error occured while deleting account";
+			log.error(message, e);
+			throw new GeneralBankingException(message);
+		}finally {
+			H2Factory.closeConnection();
 		}
 		return true;
 	}

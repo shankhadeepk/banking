@@ -62,7 +62,21 @@ public class BankingResourceTest extends JerseyTest{
 		Response response = invocationBuilder.post(Entity.json(requestJson));
 		//Response response=target("/account").request().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).post(Entity.entity(account, MediaType.APPLICATION_JSON));
 		System.out.println(response);
+		System.out.println(response.readEntity(String.class));
 		assertEquals("should return 201",201,response.getStatus());
+	}
+
+	@Test
+	public void testDeleteAccount() throws GeneralBankingException {
+		BankAccount account=new BankAccount("Shankhadeep",new BigDecimal(1000.00),"EUR","hansin@gmail.com","RRRTY","878772727");
+		account.setStrAccountType("SAV");
+		WebTarget webTarget=target("/account/");
+		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		Response response = invocationBuilder.delete();
+		//Response response=target("/account").request().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).post(Entity.entity(account, MediaType.APPLICATION_JSON));
+		System.out.println(response);
+		System.out.println(response.readEntity(String.class));
+		assertEquals("should return 200",200,response.getStatus());
 	}
 
 }

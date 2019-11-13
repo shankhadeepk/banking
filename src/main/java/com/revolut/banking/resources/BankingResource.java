@@ -42,7 +42,7 @@ public class BankingResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
-	@ApiResponse(code=200,message="Account created successfully")
+	@ApiResponse(code=201,message="Account created successfully")
 	})
 	public Response createAccount(BankAccount bAccount) throws Exception{
 		log.info("Create Account");
@@ -52,11 +52,34 @@ public class BankingResource {
 							.setFromAccHolderName(bAccount.getBankAccHolderName())
 							.setTypeOfTransaction("CREATE_ACCOUNT")
 							.build();
-		transactionService.createTransaction();
+		//Every transaction is saved in database
+		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		//Check if the account with the details already exists.
 		accountsService.validateAccount(bAccount);
 		accountsService.createAccount(bAccount);
 		
 		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
+	}
+
+	@Path("/account/{accId}")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiResponses(value= {
+			@ApiResponse(code=200,message="Account deleted successfully")
+	})
+	public Response deleteAccount(@PathParam("accId") String bAccountId) throws Exception{
+		log.info("Create Account");
+		BankingTransactionnResponse bankingTransactionnResponse
+				=new BankingTransactionBuilder()
+				.setTransactionId()
+				.setFromAccount(Long.parseLong(bAccountId))
+				.setTypeOfTransaction("DELETE_ACCOUNT")
+				.build();
+		//Every transaction is saved in database
+		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
+
+		accountsService.deleteAccount(bAccountId);
+
+		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
 }

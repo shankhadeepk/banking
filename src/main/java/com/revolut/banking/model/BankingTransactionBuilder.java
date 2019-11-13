@@ -25,18 +25,14 @@ public class BankingTransactionBuilder {
 		this.typeOfTransaction=typeOfTransaction;
 		return this;
 	}
-	
-	public long getFromAccount() {
-		return fromAccount;
-	}
-	public void setFromAccount(long fromAccount) {
+
+	public BankingTransactionBuilder setFromAccount(long fromAccount) {
 		this.fromAccount = fromAccount;
+		return this;
 	}
-	public long getToAccount() {
-		return toAccount;
-	}
-	public void setToAccount(long toAccount) {
+	public BankingTransactionBuilder setToAccount(long toAccount) {
 		this.toAccount = toAccount;
+		return this;
 	}
 	public BankingTransactionBuilder setFromAccHolderName(String fromAccHolderName) {
 		this.fromAccHolderName = fromAccHolderName;

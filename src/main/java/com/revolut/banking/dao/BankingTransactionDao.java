@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface BankingTransactionDao {
 
-	public boolean saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException;
+	public BankingTransactionnResponse saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException;
 	public List<BankingTransactionnResponse> getTransactions(String transactionId) throws GeneralBankingException;
 }
