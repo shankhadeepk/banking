@@ -1,20 +1,17 @@
 package com.revolut.banking.dao;
 
+import com.revolut.banking.config.AppConstants;
+import com.revolut.banking.config.H2Factory;
+import com.revolut.banking.exceptions.GeneralBankingException;
+import com.revolut.banking.model.BankingTransactionnResponse;
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import com.revolut.banking.config.AppConstants;
-import com.revolut.banking.config.DatabaseInitialization;
-import com.revolut.banking.exceptions.GeneralBankingException;
-import com.revolut.banking.model.BankAccount;
-import com.revolut.banking.model.BankingTransactionnResponse;
-import com.revolut.banking.resources.BankingResource;
 
 public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	
@@ -28,7 +25,7 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	private static final String DELETE_TRANSACT = "DELETE FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
 
 	public BankingTransactionDaoImpl() throws SQLException {
-		this.connection = DatabaseInitialization.getConnection();
+		this.connection = H2Factory.getConnection();
 	}
 
 	@Override
@@ -51,13 +48,13 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			log.error(message, e);
 			throw new GeneralBankingException(message);
 		}finally {
-			try {
-				DatabaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				message = "Error while creating transaction details, closing connection";
-				log.error(message, e);
-				throw new GeneralBankingException(message);
-			}
+			
+			H2Factory.closeConnection();
+			/*
+			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
+			 * message = "Error while creating transaction details, closing connection";
+			 * log.error(message, e); throw new GeneralBankingException(message); }
+			 */
 		}
 
 		return true;
@@ -88,13 +85,12 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			throw new GeneralBankingException(message);
 
 		} finally {
-			try {
-				DatabaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				message = "Error while getting accounts details, closing connection";
-				log.error(message, e);
-				throw new GeneralBankingException(message);
-			}
+			 H2Factory.closeConnection();
+			/*
+			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
+			 * message = "Error while getting accounts details, closing connection";
+			 * log.error(message, e); throw new GeneralBankingException(message); }
+			 */
 		}
 
 		return transactions;

@@ -1,25 +1,18 @@
 package com.revolut.banking.config;
 
-import static org.junit.Assert.*;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.revolut.banking.BankingStarter;
-
-public class DatabaseInitializationTest {
+public class H2FactoryTest {
 	
-	static Logger log = Logger.getLogger(DatabaseInitializationTest.class.getName());
-	
-	private final static DatabaseInitialization databaseInitialization=new DatabaseInitialization();
+	static Logger log = Logger.getLogger(H2FactoryTest.class.getName());
+
 	private static Connection connection;
 	private static final String createEmployee="CREATE TABLE EMP(EMPID INT PRIMARY KEY, EMPNAME VARCHAR(200))";
 	private static final String insert="INSERT INTO EMP VALUES(?,?)";
@@ -27,10 +20,10 @@ public class DatabaseInitializationTest {
 	private static final String dropEmployee="DROP TABLE EMP";
 	
 	@Before
-	public static void setUp() {
+	public void setUp() {
 		PreparedStatement preparedStatement=null;
 		try {
-			connection=databaseInitialization.getConnection();
+			connection=H2Factory.getConnection();
 			preparedStatement = connection.prepareStatement(createEmployee);
 			preparedStatement.execute();
 		} catch (SQLException e) {
@@ -39,7 +32,7 @@ public class DatabaseInitializationTest {
 	}
 	
 	@After
-	public static void destroy() {
+	public void destroy() {
 		PreparedStatement preparedStatement=null;
 		try {
 			preparedStatement = connection.prepareStatement(dropEmployee);

@@ -1,8 +1,8 @@
 package com.revolut.banking.model;
 
-import java.time.LocalDateTime;
-
 import com.revolut.banking.config.AppConstants;
+
+import java.time.LocalDateTime;
 
 public class BankingTransactionBuilder {
 	

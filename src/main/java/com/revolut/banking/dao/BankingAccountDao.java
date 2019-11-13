@@ -1,11 +1,9 @@
 package com.revolut.banking.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Set;
-
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
+
+import java.util.List;
 
 public interface BankingAccountDao {
 	

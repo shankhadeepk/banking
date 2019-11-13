@@ -1,8 +1,5 @@
 package com.revolut.banking.model;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
 public class BankingError {
 	
 	private String errorMessage;

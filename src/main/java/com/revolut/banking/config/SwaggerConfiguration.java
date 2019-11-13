@@ -1,16 +1,11 @@
 package com.revolut.banking.config;
 
-import java.lang.invoke.MethodHandles;
+import io.swagger.jaxrs.config.BeanConfig;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-
-import org.apache.log4j.Logger;
-
-import com.revolut.banking.BankingStarter;
-
-import io.swagger.jaxrs.config.BeanConfig;
 
 public class SwaggerConfiguration extends HttpServlet{
 	

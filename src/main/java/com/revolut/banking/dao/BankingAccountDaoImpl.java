@@ -1,21 +1,18 @@
 package com.revolut.banking.dao;
 
-import java.math.BigDecimal;
+import com.revolut.banking.config.AppConstants;
+import com.revolut.banking.config.H2Factory;
+import com.revolut.banking.exceptions.GeneralBankingException;
+import com.revolut.banking.model.BankAccount;
+import com.revolut.banking.resources.BankingResource;
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-
-import com.revolut.banking.config.AppConstants;
-import com.revolut.banking.config.DatabaseInitialization;
-import com.revolut.banking.exceptions.GeneralBankingException;
-import com.revolut.banking.model.BankAccount;
-import com.revolut.banking.resources.BankingResource;
 
 public class BankingAccountDaoImpl implements BankingAccountDao {
 
@@ -27,7 +24,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 	private static final String DELETE_ACC = "DELETE FROM BANKACCOUNT WHERE SSID = ?";
 
 	public BankingAccountDaoImpl() throws SQLException {
-		this.connection = DatabaseInitialization.getConnection();
+		this.connection = H2Factory.getConnection();
 	}
 
 	@Override
@@ -52,13 +49,12 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			throw new GeneralBankingException(message);
 
 		} finally {
-			try {
-				DatabaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				message = "Error while getting accounts details, closing connection";
-				log.error(message, e);
-				throw new GeneralBankingException(message);
-			}
+			H2Factory.closeConnection();
+			/*
+			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
+			 * message = "Error while getting accounts details, closing connection";
+			 * log.error(message, e); throw new GeneralBankingException(message); }
+			 */
 		}
 
 		return accounts;
@@ -84,13 +80,12 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			log.error(message, e);
 			throw new GeneralBankingException(message);
 		}finally {
-			try {
-				DatabaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				message = "Error while creating accounts details, closing connection";
-				log.error(message, e);
-				throw new GeneralBankingException(message);
-			}
+			H2Factory.closeConnection();
+			/*
+			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
+			 * message = "Error while creating accounts details, closing connection";
+			 * log.error(message, e); throw new GeneralBankingException(message); }
+			 */
 		}
 
 		return true;
@@ -130,13 +125,12 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			log.error(message, e);
 			throw new GeneralBankingException(message);
 		}finally {
-			try {
-				DatabaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				message = "Error while creating accounts details, closing connection";
-				log.error(message, e);
-				throw new GeneralBankingException(message);
-			}
+			H2Factory.closeConnection();
+			/*
+			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
+			 * message = "Error while creating accounts details, closing connection";
+			 * log.error(message, e); throw new GeneralBankingException(message); }
+			 */
 		}
 		return true;
 	}

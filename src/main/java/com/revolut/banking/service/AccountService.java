@@ -1,15 +1,13 @@
 package com.revolut.banking.service;
 
-import java.sql.SQLException;
-
 import com.revolut.banking.dao.BankingAccountDao;
 import com.revolut.banking.dao.BankingAccountDaoImpl;
 import com.revolut.banking.exceptions.AccountsAlreadyExists;
 import com.revolut.banking.exceptions.BadAccountRequestException;
 import com.revolut.banking.exceptions.GeneralBankingException;
-import com.revolut.banking.model.BankAccType;
 import com.revolut.banking.model.BankAccount;
-import com.revolut.banking.model.BankAccountStatus;
+
+import java.sql.SQLException;
 
 public class AccountService {
 

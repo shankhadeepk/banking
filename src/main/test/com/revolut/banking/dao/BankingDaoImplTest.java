@@ -1,23 +1,18 @@
 package com.revolut.banking.dao;
 
-import static org.junit.Assert.*;
-
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.revolut.banking.config.DatabaseInitialization;
-import com.revolut.banking.config.DatabaseInitializationTest;
+import com.revolut.banking.config.H2Factory;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class BankingDaoImplTest {
 	
@@ -25,8 +20,17 @@ public class BankingDaoImplTest {
 	
 	private static final String insert="INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE) VALUES(?,?,?,?,?,?)";
 	private static final String delete="DELETE FROM BANKACCOUNT WHERE SSID = ?";
-	private final static DatabaseInitialization databaseInitialization=new DatabaseInitialization();
-	
+
+
+	@Before
+	public void setUp(){
+		H2Factory.populateData();
+	}
+
+	@After
+	public void destroy(){
+		H2Factory.closeConnection();
+	}
 
 	@Test
 	public void testGetAccounts() {
@@ -54,14 +58,8 @@ public class BankingDaoImplTest {
 			log.error("error while doing database operation ",e);
 		} catch (GeneralBankingException e) {
 			log.error("error while doing database operation ",e);
-		}finally{
-			try {
-				databaseInitialization.closeConnection();
-			} catch (SQLException e) {
-				log.error("error on closing connections",e);
-			}
 		}
-		
 	}
+
 
 }

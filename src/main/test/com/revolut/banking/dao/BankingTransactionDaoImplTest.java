@@ -1,21 +1,32 @@
 package com.revolut.banking.dao;
 
-import static org.junit.Assert.*;
-
-import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
-import org.junit.Test;
-
-import com.revolut.banking.config.DatabaseInitialization;
+import com.revolut.banking.config.H2Factory;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankingTransactionBuilder;
 import com.revolut.banking.model.BankingTransactionnResponse;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class BankingTransactionDaoImplTest {
 	
 	static Logger log = Logger.getLogger(BankingTransactionDaoImplTest.class.getName());
-	private final static DatabaseInitialization databaseInitialization=new DatabaseInitialization();
+
+	@Before
+	public void setUp(){
+		H2Factory.populateData();
+	}
+
+	@After
+	public void destroy(){
+		H2Factory.closeConnection();
+	}
 
 	@Test
 	public void testSaveTransaction() {

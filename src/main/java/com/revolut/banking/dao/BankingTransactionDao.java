@@ -1,9 +1,9 @@
 package com.revolut.banking.dao;
 
-import java.util.List;
-
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankingTransactionnResponse;
+
+import java.util.List;
 
 public interface BankingTransactionDao {
 

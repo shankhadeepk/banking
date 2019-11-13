@@ -1,12 +1,10 @@
 package com.revolut.banking.model;
 
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.revolut.banking.exceptions.GeneralBankingException;
+
+import java.math.BigDecimal;
 
 public class BankAccount {
 	
@@ -34,14 +32,19 @@ public class BankAccount {
 	@JsonProperty(required=true)
 	private String strAccountType;
 	
+	@JsonIgnore
 	private String strStatus;
 	
+	@JsonIgnore
 	private BankAccType accountType;
 	
+	@JsonIgnore
 	private BankAccountStatus status;
 	
+	@JsonIgnore
 	private String creationDate;
 	
+	@JsonIgnore
 	private String modifiedDate;
 
 	public BankAccount(long bankAccId, String bankAccHolderName, BigDecimal balance, String currencyCode,

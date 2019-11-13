@@ -1,13 +1,12 @@
 package com.revolut.banking.exceptions;
 
+import com.revolut.banking.model.BankingError;
+import org.apache.log4j.Logger;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.log4j.Logger;
-
-import com.revolut.banking.model.BankingError;
 
 @Provider
 public class InterruptedExcMapper extends Exception 
