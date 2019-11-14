@@ -1,12 +1,12 @@
 package com.revolut.banking.resources;
 
-import com.revolut.banking.config.H2Factory;
+import com.google.gson.Gson;
+import com.revolut.banking.config.H2DatabaseFactory;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,13 +31,9 @@ public class BankingResourceTest extends JerseyTest{
 
 	@Before
 	public void setUpTest(){
-		H2Factory.populateData();
+		H2DatabaseFactory.populateData();
 	}
 
-	@After
-	public void destroyTest(){
-		H2Factory.closeConnection();
-	}
 	@Test
 	public void testHealth() {
 		Response response=target("/health").request().get();
@@ -49,33 +45,43 @@ public class BankingResourceTest extends JerseyTest{
 	public void testCreateAccount() throws GeneralBankingException {
 		BankAccount account=new BankAccount("Shankhadeep",new BigDecimal(1000.00),"EUR","hansin@gmail.com","RRRTY","878772727");
 		account.setStrAccountType("SAV");
+		Gson gson=new Gson();
+		String requestJson=gson.toJson(account);
+		System.out.println("Request Payload:"+requestJson);
 		WebTarget webTarget=target("/account");
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
-		String requestJson = "{\n" + 
-				"				\"bankAccHolderName\":\"Shankha\",\n" + 
-				"				\"balance\":\"1000\",\n" + 
-				"				\"currencyCode\":\"EUR\",\n" + 
-				"				\"emailId\":\"shankha@gmail.com\",\n" + 
-				"				\"SSID\":\"TTTT\",\n" + 
-				"				\"contact\":\"+918787667676\"\n" + 
-				"			}";
 		Response response = invocationBuilder.post(Entity.json(requestJson));
-		//Response response=target("/account").request().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).post(Entity.entity(account, MediaType.APPLICATION_JSON));
-		System.out.println(response);
-		System.out.println(response.readEntity(String.class));
+		System.out.println("Response:"+ response.readEntity(String.class));
 		assertEquals("should return 201",201,response.getStatus());
 	}
 
 	@Test
 	public void testDeleteAccount() throws GeneralBankingException {
-		BankAccount account=new BankAccount("Shankhadeep",new BigDecimal(1000.00),"EUR","hansin@gmail.com","RRRTY","878772727");
-		account.setStrAccountType("SAV");
-		WebTarget webTarget=target("/account/");
+		WebTarget webTarget=target("/account/1");
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.delete();
-		//Response response=target("/account").request().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).post(Entity.entity(account, MediaType.APPLICATION_JSON));
-		System.out.println(response);
-		System.out.println(response.readEntity(String.class));
+		System.out.println("Response:"+response.readEntity(String.class));
+		assertEquals("should return 200",200,response.getStatus());
+	}
+
+	@Test
+	public void testUpdateAccount() throws GeneralBankingException {
+		BankAccount account=new BankAccount("Shankhadeep",new BigDecimal(1000.00),"EUR","hansin@gmail.com","RRRTY","878772727");
+		account.setStrAccountType("SAV");
+		Gson gson=new Gson();
+		String requestJson=gson.toJson(account);
+		System.out.println("Request Payload:"+requestJson);
+		WebTarget webTarget=target("/account");
+		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		Response response = invocationBuilder.post(Entity.json(requestJson));
+		System.out.println("Response:"+ response.readEntity(String.class));
+
+		webTarget=target("/account/1");
+		invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		String addTobalance="1000.00";
+		requestJson=gson.toJson(addTobalance);
+		response = invocationBuilder.put(Entity.json(requestJson));
+		System.out.println("Response:"+response.readEntity(String.class));
 		assertEquals("should return 200",200,response.getStatus());
 	}
 

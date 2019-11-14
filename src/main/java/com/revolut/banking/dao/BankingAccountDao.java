@@ -11,5 +11,6 @@ public interface BankingAccountDao {
 	public boolean createNewAccount(BankAccount account) throws GeneralBankingException;
 	public boolean deleteBankAccountsAsPerSSID(String SSID) throws GeneralBankingException;
 	public boolean deleteBankAccountsAsPerAccountId(String accountId) throws GeneralBankingException;
-
+	public boolean updateBankAccountsAsPerAccountId(String accountId,BankAccount bankAccount) throws GeneralBankingException;
+	public List<BankAccount> getAccounts(long bankAccId) throws GeneralBankingException;
 }

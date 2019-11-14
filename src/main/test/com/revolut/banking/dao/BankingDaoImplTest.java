@@ -1,10 +1,9 @@
 package com.revolut.banking.dao;
 
-import com.revolut.banking.config.H2Factory;
+import com.revolut.banking.config.H2DatabaseFactory;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +23,9 @@ public class BankingDaoImplTest {
 
 	@Before
 	public void setUp(){
-		H2Factory.populateData();
+		H2DatabaseFactory.populateData();
 	}
 
-	@After
-	public void destroy(){
-		H2Factory.closeConnection();
-	}
 
 	@Test
 	public void testGetAccounts() {
@@ -54,9 +49,7 @@ public class BankingDaoImplTest {
 			
 			bankingDao.deleteBankAccountsAsPerSSID("M87887");
 			
-		} catch (SQLException e) {
-			log.error("error while doing database operation ",e);
-		} catch (GeneralBankingException e) {
+		}  catch (GeneralBankingException e) {
 			log.error("error while doing database operation ",e);
 		}
 	}

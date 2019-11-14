@@ -11,5 +11,6 @@ public class AppConstants {
 	public static final String DB_URL = "jdbc:h2:mem:banking;DB_CLOSE_DELAY=-1";
 	public static final String DB_USER = "sa";
 	public static final String DB_PWD = "";
+	public static final String DB_DRIVER="org.h2.Driver";
 
 }

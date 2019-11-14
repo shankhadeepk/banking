@@ -7,7 +7,11 @@ import com.revolut.banking.exceptions.BadAccountRequestException;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class AccountService {
 
@@ -25,6 +29,19 @@ public class AccountService {
 	public synchronized boolean deleteAccount(String accountId) throws GeneralBankingException {
 		bankingDao.deleteBankAccountsAsPerAccountId(accountId);
 		return true;
+	}
+
+	public synchronized boolean updateAccount(String accountId, BigDecimal addToBalance) throws GeneralBankingException {
+		Optional<List<BankAccount>> bankAccounts=Optional.of(bankingDao.getAccounts(Long.parseLong(accountId)));
+		BankAccount bankAccount=bankAccounts.get().get(0);
+		BigDecimal existingBalance=bankAccount.getBalance();
+		bankAccount.setBalance(existingBalance.add(addToBalance));
+		bankingDao.updateBankAccountsAsPerAccountId(accountId,bankAccount);
+		return true;
+	}
+
+	public synchronized List<BankAccount> getAccounts(String SSID) throws GeneralBankingException {
+		return bankingDao.getAccounts(SSID);
 	}
 
 	public synchronized boolean validateAccount(BankAccount bankAccount) throws AccountsAlreadyExists, BadAccountRequestException, GeneralBankingException {

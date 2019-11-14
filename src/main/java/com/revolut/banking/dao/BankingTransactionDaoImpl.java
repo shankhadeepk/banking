@@ -1,9 +1,10 @@
 package com.revolut.banking.dao;
 
 import com.revolut.banking.config.AppConstants;
-import com.revolut.banking.config.H2Factory;
+import com.revolut.banking.config.H2DatabaseFactory;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankingTransactionnResponse;
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -16,27 +17,25 @@ import java.util.List;
 public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	
 	static Logger log = Logger.getLogger(BankingTransactionDaoImpl.class.getName());
-	
-	private final Connection connection;
+
 	private static final String GET_A_TRANSACT = "SELECT * FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
 	private static final String GET_TRANSACTIONS = "SELECT * FROM BANKTRANSACTION";
 	private static final String NEW_TRANSACT = "INSERT INTO BANKTRANSACTION(TRANSACTIONID,TYPEOFTRANSACTION,FROMACCOUNT,TOACCOUNT,FROMACCHOLDERNAME,TOACCHOLDERNAME) "
 			+ "VALUES(?,?,?,?,?,?)";
 	private static final String DELETE_TRANSACT = "DELETE FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
 
-	public BankingTransactionDaoImpl() throws SQLException {
-		this.connection = H2Factory.getConnection();
-	}
 
 	@Override
 	public synchronized BankingTransactionnResponse saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		String message=null;
 		List<BankingTransactionnResponse> transactions=null;
+		Connection connection=null;
 
 		try {
+			connection=H2DatabaseFactory.getConnection();
 			String transactionId=transaction.getTransactionId();
-			preparedStatement = this.connection.prepareStatement(NEW_TRANSACT);
+			preparedStatement = connection.prepareStatement(NEW_TRANSACT);
 
 			preparedStatement.setString(1, transaction.getTransactionId());
 			preparedStatement.setString(2, transaction.getTypeOfTransaction());
@@ -53,13 +52,8 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			log.error(message, e);
 			throw new GeneralBankingException(message);
 		}finally {
-			
-			H2Factory.closeConnection();
-			/*
-			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
-			 * message = "Error while creating transaction details, closing connection";
-			 * log.error(message, e); throw new GeneralBankingException(message); }
-			 */
+			DbUtils.closeQuietly(preparedStatement);
+			DbUtils.closeQuietly(connection);
 		}
 
 		if(transactions!=null)
@@ -73,13 +67,15 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 		ResultSet result = null;
 		List<BankingTransactionnResponse> transactions = new ArrayList<>();
 		String message = null;
+		Connection connection=null;
 
-		try {		
+		try {
+			connection=H2DatabaseFactory.getConnection();
 			if(transactionId!=null) {
-				preparedStatement = this.connection.prepareStatement(GET_A_TRANSACT);			
+				preparedStatement = connection.prepareStatement(GET_A_TRANSACT);
 				preparedStatement.setString(1,transactionId);
 			}else {
-				preparedStatement = this.connection.prepareStatement(GET_TRANSACTIONS);			
+				preparedStatement = connection.prepareStatement(GET_TRANSACTIONS);
 			}
 			result = preparedStatement.executeQuery();
 
@@ -93,12 +89,8 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 			throw new GeneralBankingException(message);
 
 		} finally {
-			 H2Factory.closeConnection();
-			/*
-			 * try { DatabaseInitialization.closeConnection(); } catch (SQLException e) {
-			 * message = "Error while getting accounts details, closing connection";
-			 * log.error(message, e); throw new GeneralBankingException(message); }
-			 */
+			DbUtils.closeQuietly(preparedStatement);
+			DbUtils.closeQuietly(connection);
 		}
 
 		return transactions;

@@ -1,6 +1,6 @@
 package com.revolut.banking;
 
-import com.revolut.banking.config.H2Factory;
+import com.revolut.banking.config.H2DatabaseFactory;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -13,7 +13,7 @@ public class BankingStarter {
 	
 	public static void main(String... args) {
 		log.info("Initilization of application");
-		H2Factory.populateData();
+		H2DatabaseFactory.populateData();
 		log.info("Database initialized");
 
 		startApplication();
