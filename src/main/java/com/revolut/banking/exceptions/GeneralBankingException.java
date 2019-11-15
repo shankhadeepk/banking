@@ -14,13 +14,17 @@ public class GeneralBankingException extends Exception
 	
 	static Logger log = Logger.getLogger(GeneralBankingException.class.getName());
 
+	public GeneralBankingException(){
+		super("General Banking Exception");
+	}
+
 	public GeneralBankingException(String message) {
 		super(message);
 	}
 
 	@Override
 	public Response toResponse(GeneralBankingException exception) {
-		log.error(exception);
+		log.error("Exception occurred: "+exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.INTERNAL_SERVER_ERROR.name());
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).type(MediaType.APPLICATION_JSON).build();
 	}

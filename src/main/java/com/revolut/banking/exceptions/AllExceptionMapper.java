@@ -1,24 +1,27 @@
 package com.revolut.banking.exceptions;
 
+import com.revolut.banking.model.BankingError;
+import org.apache.log4j.Logger;
+
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AllExceptionMapper implements ExceptionMapper<Throwable>{
+public class AllExceptionMapper extends Throwable implements ExceptionMapper<Throwable>{
+
+	static Logger log = Logger.getLogger(AllExceptionMapper.class.getName());
 
 	@Override
-	public Response toResponse(Throwable error) {
-		 Response response;
-		    if (error instanceof WebApplicationException) {
-		        WebApplicationException webEx = (WebApplicationException)error;
-		        response = webEx.getResponse();
-		    } else {
-		        response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-		                .entity("Internal error").type("text/plain").build();
-		    }
-		    return response;
+	public Response toResponse(Throwable exception) {
+		log.error("Something worst happened",exception);
+		BankingError error=new BankingError(exception.getMessage(),Response.Status.INTERNAL_SERVER_ERROR.name());
+
+		return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+		                .entity(error).type(MediaType.APPLICATION_JSON).build();
+
 	}
 
 }

@@ -4,31 +4,41 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.revolut.banking.exceptions.GeneralBankingException;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class BankAccount {
 	
 	@JsonIgnore
 	private long bankAccId;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private String bankAccHolderName;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private BigDecimal balance;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private String currencyCode;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private String emailId;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private String SSID;
-	
+
+	@NotNull
 	@JsonProperty(required=true)
 	private String contact;
-	
+
+	@NotNull
+	@Size(min=3,max=3)
 	@JsonProperty(required=true)
 	private String strAccountType;
 	

@@ -53,6 +53,11 @@ public class BankingResourceTest extends JerseyTest{
 		Response response = invocationBuilder.post(Entity.json(requestJson));
 		System.out.println("Response:"+ response.readEntity(String.class));
 		assertEquals("should return 201",201,response.getStatus());
+
+		webTarget=target("/account/1");
+		invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		response = invocationBuilder.get();
+		System.out.println("Response:"+ response.readEntity(String.class));
 	}
 
 	@Test
@@ -70,7 +75,7 @@ public class BankingResourceTest extends JerseyTest{
 		account.setStrAccountType("SAV");
 		Gson gson=new Gson();
 		String requestJson=gson.toJson(account);
-		System.out.println("Request Payload:"+requestJson);
+		System.out.println("Create Account Request Payload:"+requestJson);
 		WebTarget webTarget=target("/account");
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
 		Response response = invocationBuilder.post(Entity.json(requestJson));
@@ -78,11 +83,19 @@ public class BankingResourceTest extends JerseyTest{
 
 		webTarget=target("/account/1");
 		invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
-		String addTobalance="1000.00";
+		BigDecimal addTobalance=new BigDecimal(1000.00);
 		requestJson=gson.toJson(addTobalance);
+		System.out.println("Update Request Payload: "+requestJson);
 		response = invocationBuilder.put(Entity.json(requestJson));
 		System.out.println("Response:"+response.readEntity(String.class));
 		assertEquals("should return 200",200,response.getStatus());
+
+		webTarget=target("/account/1");
+		invocationBuilder =  webTarget.request(MediaType.APPLICATION_JSON);
+		response = invocationBuilder.get();
+		System.out.println("Response:"+ response.readEntity(String.class));
+
+
 	}
 
 }

@@ -9,14 +9,10 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class InterruptedExcMapper extends Exception 
-		implements ExceptionMapper<InterruptedException>{
+public class InterruptedExcMapper implements ExceptionMapper<InterruptedException>{
 	
 	static Logger log = Logger.getLogger(InterruptedExcMapper.class.getName());
-	
-	InterruptedExcMapper(){
-		super("exception occurred due to adding data to queue");
-	}
+
 
 	@Override
 	public Response toResponse(InterruptedException exception) {

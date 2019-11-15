@@ -55,4 +55,8 @@ public class AccountService {
 		}
 		return true;
 	}
+
+	public synchronized List<BankAccount> getAccounts(long accountId) throws GeneralBankingException {
+		return bankingDao.getAccounts(accountId);
+	}
 }

@@ -138,8 +138,8 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		try {
 			connection=H2DatabaseFactory.getConnection();
 			preparedStatement = connection.prepareStatement(UPDATE_ACC);
-			preparedStatement.setString(1, accountId);
-			preparedStatement.setBigDecimal(2, bankAccount.getBalance());
+			preparedStatement.setBigDecimal(1, bankAccount.getBalance());
+			preparedStatement.setLong(2, Long.parseLong(accountId));
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			message = "Error occured while deleting account";

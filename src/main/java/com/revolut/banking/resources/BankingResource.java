@@ -16,6 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Path("/")
@@ -24,8 +26,8 @@ public class BankingResource {
 
 	static Logger log = Logger.getLogger(BankingResource.class.getName());
 
-	private AccountService accountsService;
-	private TransactionService transactionService;
+	private final AccountService accountsService;
+	private final TransactionService transactionService;
 
 	public BankingResource() throws SQLException {
 		accountsService = new AccountService();
@@ -38,6 +40,27 @@ public class BankingResource {
 	public String check() {
 		log.info("in the controller");
 		return "success";
+	}
+
+	@Path("/account/{accId}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiResponses(value= {
+			@ApiResponse(code=200,message="Account information returned successfully")
+	})
+	public Response getAccount(@PathParam("accId") long bAccountId) throws Exception{
+		log.info("Delete Account");
+		BankingTransactionnResponse bankingTransactionnResponse
+				=new BankingTransactionBuilder()
+				.setTransactionId()
+				.setFromAccount(bAccountId)
+				.setTypeOfTransaction("GET_ACCOUNT")
+				.build();
+		//Every transaction is saved in database
+		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
+		Optional<List<BankAccount>> bankAccounts=Optional.of(accountsService.getAccounts(bAccountId));
+		BankAccount bankAccount=bankAccounts.get().get(0);
+		return Response.status(Response.Status.OK).entity(bankAccount).build();
 	}
 
 	@Path("/account")
@@ -94,10 +117,11 @@ public class BankingResource {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
-			@ApiResponse(code=200,message="Account deleted successfully")
+			@ApiResponse(code=200,message="Account updated successfully")
 	})
-	public Response updateBalance(@PathParam("accId") String bAccountId,String balance) throws Exception{
-		log.info("Update Account");
+	public Response updateBalance(@PathParam("accId") String bAccountId,BigDecimal balance) throws Exception{
+		log.info("Update Account with Balance:"+balance);
+
 		BankingTransactionnResponse bankingTransactionnResponse
 				=new BankingTransactionBuilder()
 				.setTransactionId()
@@ -106,7 +130,7 @@ public class BankingResource {
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
-		accountsService.updateAccount(bAccountId, new BigDecimal(balance));
+		accountsService.updateAccount(bAccountId, balance);
 		bankingTransactionnResponse.setFromAccount(Long.parseLong(bAccountId));
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
