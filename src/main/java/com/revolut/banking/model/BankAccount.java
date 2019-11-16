@@ -2,13 +2,18 @@ package com.revolut.banking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.revolut.banking.exceptions.BalanceNotEnoughException;
 import com.revolut.banking.exceptions.GeneralBankingException;
+import com.revolut.banking.resources.BankingResource;
+import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public class BankAccount {
+
+	static Logger log = Logger.getLogger(BankAccount.class.getName());
 	
 	@JsonIgnore
 	private long bankAccId;
@@ -224,6 +229,37 @@ public class BankAccount {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+
+	public synchronized void withDraw(BigDecimal amount) throws GeneralBankingException, BalanceNotEnoughException {
+			if (this.balance.compareTo(amount) == 1) {
+				log.info("Amount to be withdrawn :" + amount + " from balance:" + this.balance);
+				try {
+					Thread.sleep(100);
+					this.balance = this.balance.subtract(amount);
+				} catch (Exception ex) {
+					log.error("Exception occurred while withDraw",ex);
+					throw new GeneralBankingException("Exception occurred while withdrawing");
+				}
+			}else{
+				throw new BalanceNotEnoughException();
+			}
+
+	}
+
+	public synchronized void deposit(BigDecimal amount) throws GeneralBankingException, BalanceNotEnoughException {
+			if(amount.compareTo(BigDecimal.ZERO) > 0){
+				log.info("Amount to be withdrawn :" + amount + " from balance:" + this.balance);
+				try {
+					Thread.sleep(100);
+					this.balance = this.balance.add(amount);
+				} catch (Exception ex) {
+					log.error("Exception occurred while Deposit",ex);
+					throw new GeneralBankingException("Exception occurred while depositing");
+				}
+			}else{
+				throw new BalanceNotEnoughException("The amount to be deposited is less than 0");
+			}
 	}
 
 	@Override

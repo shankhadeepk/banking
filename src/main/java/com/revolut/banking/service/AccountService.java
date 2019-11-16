@@ -4,6 +4,7 @@ import com.revolut.banking.dao.BankingAccountDao;
 import com.revolut.banking.dao.BankingAccountDaoImpl;
 import com.revolut.banking.exceptions.AccountsAlreadyExists;
 import com.revolut.banking.exceptions.BadAccountRequestException;
+import com.revolut.banking.exceptions.BalanceNotEnoughException;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 
@@ -21,30 +22,41 @@ public class AccountService {
 		bankingDao = new BankingAccountDaoImpl();
 	}
 
-	public synchronized BankAccount createAccount(BankAccount account) throws GeneralBankingException {
+	public synchronized BankAccount createAccount(BankAccount account) throws Exception {
 		bankingDao.createNewAccount(account);
 		return account;
 	}
 
-	public synchronized boolean deleteAccount(String accountId) throws GeneralBankingException {
+	public synchronized boolean deleteAccount(String accountId) throws Exception {
 		bankingDao.deleteBankAccountsAsPerAccountId(accountId);
 		return true;
 	}
 
-	public synchronized boolean updateAccount(String accountId, BigDecimal addToBalance) throws GeneralBankingException {
+	public synchronized boolean updateAccount(String accountId, BigDecimal addToBalance) throws Exception {
 		Optional<List<BankAccount>> bankAccounts=Optional.of(bankingDao.getAccounts(Long.parseLong(accountId)));
 		BankAccount bankAccount=bankAccounts.get().get(0);
-		BigDecimal existingBalance=bankAccount.getBalance();
-		bankAccount.setBalance(existingBalance.add(addToBalance));
+		bankAccount.deposit(addToBalance);
 		bankingDao.updateBankAccountsAsPerAccountId(accountId,bankAccount);
 		return true;
 	}
 
-	public synchronized List<BankAccount> getAccounts(String SSID) throws GeneralBankingException {
+	@Transactional
+	public synchronized boolean fundTransfer(long frmAccountId,long toAccountId, BigDecimal amount) throws Exception {
+		Optional<List<BankAccount>> fromBanksAccounts=Optional.of(bankingDao.getAccounts(frmAccountId));
+		BankAccount frmBankAccount=fromBanksAccounts.get().get(0);
+		Optional<List<BankAccount>> toBanksAccounts=Optional.of(bankingDao.getAccounts(toAccountId));
+		BankAccount toBankAccount=toBanksAccounts.get().get(0);
+		frmBankAccount.withDraw(amount);
+		toBankAccount.deposit(amount);
+		bankingDao.updateBankAccountsAsPerAccountId(frmAccountId,frmBankAccount);
+		return true;
+	}
+
+	public synchronized List<BankAccount> getAccounts(String SSID) throws Exception {
 		return bankingDao.getAccounts(SSID);
 	}
 
-	public synchronized boolean validateAccount(BankAccount bankAccount) throws AccountsAlreadyExists, BadAccountRequestException, GeneralBankingException {
+	public synchronized boolean validateAccount(BankAccount bankAccount) throws Exception {
 		if(bankAccount.getSSID().isEmpty() || bankAccount.getEmailId().isEmpty() || bankAccount.getBankAccHolderName().isEmpty()) {
 			throw new BadAccountRequestException();
 		}
@@ -56,7 +68,7 @@ public class AccountService {
 		return true;
 	}
 
-	public synchronized List<BankAccount> getAccounts(long accountId) throws GeneralBankingException {
+	public synchronized List<BankAccount> getAccounts(long accountId) throws Exception {
 		return bankingDao.getAccounts(accountId);
 	}
 }

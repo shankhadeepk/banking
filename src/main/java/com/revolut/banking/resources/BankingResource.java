@@ -135,4 +135,32 @@ public class BankingResource {
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
+
+	@Path("/account/from/{fromAccount}/to/{toAccount}")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiResponses(value= {
+			@ApiResponse(code=201,message="Account created successfully")
+	})
+	public Response transferFund(long fromAccount,long toAccount,BigDecimal transferredAmount) throws Exception{
+		log.info("Create Account");
+		BankingTransactionnResponse bankingTransactionnResponse
+				=new BankingTransactionBuilder()
+				.setTransactionId()
+				.setFromAccount(fromAccount)
+				.setToAccount(toAccount)
+				.setTypeOfTransaction("TRANSFER_FUND")
+				.build();
+		//Every transaction is saved in database
+		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
+		//Check if the account with the details already exists.
+		accountsService.validateAccount(bAccount);
+		accountsService.createAccount(bAccount);
+		BankAccount bankAccount=accountsService.getAccounts(bAccount.getSSID()).stream().
+				filter(bAcc -> bAcc.getAccountType().equals(typeAcc)).collect(Collectors.toList()).get(0);
+		bankingTransactionnResponse.setFromAccount(bankAccount.getBankAccId());
+
+		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
+	}
 }
