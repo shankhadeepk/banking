@@ -131,17 +131,39 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 	}
 
 	@Override
-	public synchronized boolean updateBankAccountsAsPerAccountId(String accountId,BankAccount bankAccount) throws GeneralBankingException {
+	public synchronized boolean updateBankAccountsAsPerAccountId(BankAccount frmBankAccount,BankAccount toBankAccount) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		String message=null;
 		Connection connection=null;
 		try {
 			connection=H2DatabaseFactory.getConnection();
-			preparedStatement = connection.prepareStatement(UPDATE_ACC);
-			preparedStatement.setBigDecimal(1, bankAccount.getBalance());
-			preparedStatement.setLong(2, Long.parseLong(accountId));
-			preparedStatement.execute();
+			connection.setAutoCommit(false);
+			if (frmBankAccount!=null) {
+                preparedStatement = connection.prepareStatement(UPDATE_ACC);
+                preparedStatement.setBigDecimal(1, frmBankAccount.getBalance());
+                preparedStatement.setLong(2, frmBankAccount.getBankAccId());
+                preparedStatement.execute();
+            }
+
+            if (toBankAccount!=null) {
+                preparedStatement = connection.prepareStatement(UPDATE_ACC);
+                preparedStatement.setBigDecimal(1, toBankAccount.getBalance());
+                preparedStatement.setLong(2, toBankAccount.getBankAccId());
+                preparedStatement.execute();
+            }
+
+            connection.commit();
+
 		} catch (SQLException e) {
+		    if(connection!=null){
+                try {
+                    log.error("Alert ! transaction is rolled back");
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    log.error("Exception occurred while rolling back while updating " +
+                            "from account Id:"+frmBankAccount.getBankAccId()+" to account Id:"+toBankAccount.getBankAccId());
+                }
+            }
 			message = "Error occured while deleting account";
 			log.error(message, e);
 			throw new GeneralBankingException(message);

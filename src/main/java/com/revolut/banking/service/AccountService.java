@@ -7,6 +7,8 @@ import com.revolut.banking.exceptions.BadAccountRequestException;
 import com.revolut.banking.exceptions.BalanceNotEnoughException;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
+import com.revolut.banking.resources.BankingResource;
+import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AccountService {
+
+	static Logger log = Logger.getLogger(AccountService.class.getName());
 
 	private final BankingAccountDao bankingDao;
 
@@ -36,19 +40,23 @@ public class AccountService {
 		Optional<List<BankAccount>> bankAccounts=Optional.of(bankingDao.getAccounts(Long.parseLong(accountId)));
 		BankAccount bankAccount=bankAccounts.get().get(0);
 		bankAccount.deposit(addToBalance);
-		bankingDao.updateBankAccountsAsPerAccountId(accountId,bankAccount);
+		bankingDao.updateBankAccountsAsPerAccountId(bankAccount,null);
 		return true;
 	}
 
-	@Transactional
+
 	public synchronized boolean fundTransfer(long frmAccountId,long toAccountId, BigDecimal amount) throws Exception {
-		Optional<List<BankAccount>> fromBanksAccounts=Optional.of(bankingDao.getAccounts(frmAccountId));
-		BankAccount frmBankAccount=fromBanksAccounts.get().get(0);
-		Optional<List<BankAccount>> toBanksAccounts=Optional.of(bankingDao.getAccounts(toAccountId));
-		BankAccount toBankAccount=toBanksAccounts.get().get(0);
-		frmBankAccount.withDraw(amount);
-		toBankAccount.deposit(amount);
-		bankingDao.updateBankAccountsAsPerAccountId(frmAccountId,frmBankAccount);
+		if(amount.compareTo(BigDecimal.ZERO) > 0) {
+			Optional<List<BankAccount>> fromBanksAccounts = Optional.of(bankingDao.getAccounts(frmAccountId));
+			BankAccount frmBankAccount = fromBanksAccounts.get().get(0);
+			Optional<List<BankAccount>> toBanksAccounts = Optional.of(bankingDao.getAccounts(toAccountId));
+			BankAccount toBankAccount = toBanksAccounts.get().get(0);
+			frmBankAccount.withDraw(amount);
+			toBankAccount.deposit(amount);
+			bankingDao.updateBankAccountsAsPerAccountId(toBankAccount, frmBankAccount);
+		}else {
+			log.error("The amount to be added is less than or equal to 0, which is not allowed");
+		}
 		return true;
 	}
 

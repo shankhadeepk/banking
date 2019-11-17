@@ -98,4 +98,53 @@ public class BankingResourceTest extends JerseyTest{
 
 	}
 
+	@Test
+	public void testTransferFunds() {
+
+		try {
+			// Adding account 1
+			BankAccount account = new BankAccount("Shankhadeep", new BigDecimal(1000.00), "EUR", "hansin@gmail.com", "RRRTY", "878772727");
+			account.setStrAccountType("SAV");
+			Gson gson = new Gson();
+			String requestJson = gson.toJson(account);
+			System.out.println("Create Account Request Payload:" + requestJson);
+			WebTarget webTarget = target("/account");
+			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+			Response response = invocationBuilder.post(Entity.json(requestJson));
+			System.out.println("Response:" + response.readEntity(String.class));
+
+			//Adding account 2
+			account = new BankAccount("Tom", new BigDecimal(1000.00), "EUR", "tom@gmail.com", "RRRTY", "87877272711");
+			account.setStrAccountType("SAV");
+			gson = new Gson();
+			requestJson = gson.toJson(account);
+			System.out.println("Create Account Request Payload:" + requestJson);
+			webTarget = target("/account");
+			invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+			response = invocationBuilder.post(Entity.json(requestJson));
+			System.out.println("Response:" + response.readEntity(String.class));
+
+			//Fund transfer from account 1 to account 2
+
+			webTarget = target("/account/from/1/to/2");
+			invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+			BigDecimal addTobalance = new BigDecimal(100.00);
+			requestJson = gson.toJson(addTobalance);
+			System.out.println("Transfer payload: " + requestJson);
+			response = invocationBuilder.post(Entity.json(requestJson));
+			System.out.println("Response:" + response.readEntity(String.class));
+			assertEquals("should return 200", 200, response.getStatus());
+
+			//Check the transferred accound
+			webTarget = target("/account/2");
+			invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+			response = invocationBuilder.get();
+			System.out.println("Response:" + response.readEntity(String.class));
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+
+
+	}
+
 }
