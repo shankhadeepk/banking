@@ -20,6 +20,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * Banking Rest Controller
+ *
+ * Following actions are implemented:
+ * 1.	Health of the service
+ * 2. 	Get information of account. GET (/account/{accountId})
+ * 3.	Create a new account POST (/account)
+ * 4.	Deleted Account DELETE (/account/{accountId})
+ * 5. 	Update Balance PUT (/account/{accountId})
+ * 6. 	Transfer Fund POST (/account/from/{fromAccount}/to/{toAccount})
+ *
+ */
 @Path("/")
 @Api(value = "/", description = "Service for banking")
 public class BankingResource {
@@ -30,8 +43,8 @@ public class BankingResource {
 	private final TransactionService transactionService;
 
 	public BankingResource() throws SQLException {
-		accountsService = new AccountService();
-		transactionService = new TransactionService();
+		this.accountsService = new AccountService();
+		this.transactionService = new TransactionService();
 	}
 
 	@Path("/health")
@@ -42,6 +55,13 @@ public class BankingResource {
 		return "success";
 	}
 
+	/**
+	 * Get Account information from Account Id
+	 *
+	 * @param bAccountId
+	 * @return
+	 * @throws Exception
+	 */
 	@Path("/account/{accId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -63,6 +83,13 @@ public class BankingResource {
 		return Response.status(Response.Status.OK).entity(bankAccount).build();
 	}
 
+	/**
+	 * Create a New Account
+	 *
+	 * @param bAccount
+	 * @return
+	 * @throws Exception
+	 */
 	@Path("/account")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -91,6 +118,14 @@ public class BankingResource {
 		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
 	}
 
+	/**
+	 *
+	 * Delete Account with Account Id
+	 *
+	 * @param bAccountId
+	 * @return
+	 * @throws Exception
+	 */
 	@Path("/account/{accId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
@@ -113,6 +148,15 @@ public class BankingResource {
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
 
+	/**
+	 *
+	 * Update Account details
+	 *
+	 * @param bAccountId
+	 * @param balance
+	 * @return
+	 * @throws Exception
+	 */
 	@Path("/account/{accId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
@@ -136,6 +180,17 @@ public class BankingResource {
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
 
+	/**
+	 *
+	 * Transfer Fund from Account with Id to Account with Id
+	 *
+	 *
+	 * @param fromAccount
+	 * @param toAccount
+	 * @param transferredAmount
+	 * @return
+	 * @throws Exception
+	 */
 	@Path("/account/from/{fromAccount}/to/{toAccount}")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
