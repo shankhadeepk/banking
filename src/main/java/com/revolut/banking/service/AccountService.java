@@ -2,10 +2,7 @@ package com.revolut.banking.service;
 
 import com.revolut.banking.dao.BankingAccountDao;
 import com.revolut.banking.dao.BankingAccountDaoImpl;
-import com.revolut.banking.exceptions.AccountsAlreadyExists;
-import com.revolut.banking.exceptions.BadAccountRequestException;
-import com.revolut.banking.exceptions.BalanceNotEnoughException;
-import com.revolut.banking.exceptions.GeneralBankingException;
+import com.revolut.banking.exceptions.*;
 import com.revolut.banking.model.BankAccount;
 import com.revolut.banking.resources.BankingResource;
 import org.apache.log4j.Logger;
@@ -23,7 +20,7 @@ public class AccountService {
 	private final BankingAccountDao bankingDao;
 
 	public AccountService() throws SQLException {
-		bankingDao = new BankingAccountDaoImpl();
+		this.bankingDao = new BankingAccountDaoImpl();
 	}
 
 	public synchronized BankAccount createAccount(BankAccount account) throws Exception {
@@ -31,16 +28,20 @@ public class AccountService {
 		return account;
 	}
 
-	public synchronized boolean deleteAccount(String accountId) throws Exception {
-		bankingDao.deleteBankAccountsAsPerAccountId(accountId);
+	public synchronized boolean deleteAccount(Long accountId) throws Exception {
+		if(bankingDao.deleteBankAccountsAsPerAccountId(accountId)<=0){
+			throw new AccountNotFoundException();
+		}
 		return true;
 	}
 
-	public synchronized boolean updateAccount(String accountId, BigDecimal addToBalance) throws Exception {
-		Optional<List<BankAccount>> bankAccounts=Optional.of(bankingDao.getAccounts(Long.parseLong(accountId)));
+	public synchronized boolean updateAccount(Long accountId, BigDecimal addToBalance) throws Exception {
+		Optional<List<BankAccount>> bankAccounts=Optional.of(bankingDao.getAccounts(accountId));
 		BankAccount bankAccount=bankAccounts.get().get(0);
 		bankAccount.deposit(addToBalance);
-		bankingDao.updateBankAccountsAsPerAccountId(bankAccount,null);
+		if(bankingDao.updateBankAccountsAsPerAccountId(bankAccount,null)<=0){
+			throw new AccountNotFoundException();
+		}
 		return true;
 	}
 
@@ -53,7 +54,9 @@ public class AccountService {
 			BankAccount toBankAccount = toBanksAccounts.get().get(0);
 			frmBankAccount.withDraw(amount);
 			toBankAccount.deposit(amount);
-			bankingDao.updateBankAccountsAsPerAccountId(toBankAccount, frmBankAccount);
+			if(bankingDao.updateBankAccountsAsPerAccountId(toBankAccount, frmBankAccount)<=0){
+				throw new AccountNotFoundException();
+			}
 		}else {
 			log.error("The amount to be added is less than or equal to 0, which is not allowed");
 		}

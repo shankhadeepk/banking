@@ -132,18 +132,18 @@ public class BankingResource {
 	@ApiResponses(value= {
 			@ApiResponse(code=200,message="Account deleted successfully")
 	})
-	public Response deleteAccount(@PathParam("accId") String bAccountId) throws Exception{
+	public Response deleteAccount(@PathParam("accId") Long bAccountId) throws Exception{
 		log.info("Delete Account");
 		BankingTransactionnResponse bankingTransactionnResponse
 				=new BankingTransactionBuilder()
 				.setTransactionId()
-				.setFromAccount(Long.parseLong(bAccountId))
+				.setFromAccount(bAccountId)
 				.setTypeOfTransaction("DELETE_ACCOUNT")
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		accountsService.deleteAccount(bAccountId);
-		bankingTransactionnResponse.setFromAccount(Long.parseLong(bAccountId));
+		bankingTransactionnResponse.setFromAccount(bAccountId);
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
@@ -163,19 +163,19 @@ public class BankingResource {
 	@ApiResponses(value= {
 			@ApiResponse(code=200,message="Account updated successfully")
 	})
-	public Response updateBalance(@PathParam("accId") String bAccountId,BigDecimal balance) throws Exception{
+	public Response updateBalance(@PathParam("accId") Long bAccountId,BigDecimal balance) throws Exception{
 		log.info("Update Account with Balance:"+balance);
 
 		BankingTransactionnResponse bankingTransactionnResponse
 				=new BankingTransactionBuilder()
 				.setTransactionId()
-				.setFromAccount(Long.parseLong(bAccountId))
+				.setFromAccount(bAccountId)
 				.setTypeOfTransaction("UPDATE_BALANCE")
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		accountsService.updateAccount(bAccountId, balance);
-		bankingTransactionnResponse.setFromAccount(Long.parseLong(bAccountId));
+		bankingTransactionnResponse.setFromAccount(bAccountId);
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}

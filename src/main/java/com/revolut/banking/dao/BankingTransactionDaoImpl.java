@@ -32,28 +32,31 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 		List<BankingTransactionnResponse> transactions=null;
 		Connection connection=null;
 
-		try {
-			connection=H2DatabaseFactory.getConnection();
-			String transactionId=transaction.getTransactionId();
-			preparedStatement = connection.prepareStatement(NEW_TRANSACT);
+		if(transaction!=null) {
 
-			preparedStatement.setString(1, transaction.getTransactionId());
-			preparedStatement.setString(2, transaction.getTypeOfTransaction());
-			preparedStatement.setLong(3, transaction.getFromAccount());
-			preparedStatement.setLong(4, transaction.getToAccount());
-			preparedStatement.setString(5, transaction.getFromAccHolderName());
-			preparedStatement.setString(6, transaction.getToAccountHolderName());
-			preparedStatement.executeUpdate();
+			try {
+				connection = H2DatabaseFactory.getConnection();
+				String transactionId = transaction.getTransactionId();
+				preparedStatement = connection.prepareStatement(NEW_TRANSACT);
 
-			transactions=getTransactions(transactionId);
+				preparedStatement.setString(1, transaction.getTransactionId());
+				preparedStatement.setString(2, transaction.getTypeOfTransaction());
+				preparedStatement.setLong(3, transaction.getFromAccount());
+				preparedStatement.setLong(4, transaction.getToAccount());
+				preparedStatement.setString(5, transaction.getFromAccHolderName());
+				preparedStatement.setString(6, transaction.getToAccountHolderName());
+				preparedStatement.executeUpdate();
 
-		} catch (SQLException e) {
-			message = "Error occured while creating transaction";
-			log.error(message, e);
-			throw new GeneralBankingException(message);
-		}finally {
-			DbUtils.closeQuietly(preparedStatement);
-			DbUtils.closeQuietly(connection);
+				transactions = getTransactions(transactionId);
+
+			} catch (SQLException e) {
+				message = "Error occured while creating transaction";
+				log.error(message, e);
+				throw new GeneralBankingException(message);
+			} finally {
+				DbUtils.closeQuietly(preparedStatement);
+				DbUtils.closeQuietly(connection);
+			}
 		}
 
 		if(transactions!=null)

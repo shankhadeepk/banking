@@ -110,15 +110,16 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 	}
 
 	@Override
-	public synchronized boolean deleteBankAccountsAsPerAccountId(String accountId) throws GeneralBankingException {
+	public synchronized int deleteBankAccountsAsPerAccountId(Long accountId) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		String message=null;
 		Connection connection=null;
+		int result=0;
 		try {
 			connection=H2DatabaseFactory.getConnection();
 			preparedStatement = connection.prepareStatement(DELETE_ACC_ACCID);
-			preparedStatement.setString(1, accountId);
-			preparedStatement.execute();
+			preparedStatement.setLong(1, accountId);
+			result=preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			message = "Error occured while deleting account";
 			log.error(message, e);
@@ -127,14 +128,15 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			DbUtils.closeQuietly(preparedStatement);
 			DbUtils.closeQuietly(connection);
 		}
-		return true;
+		return result;
 	}
 
 	@Override
-	public synchronized boolean updateBankAccountsAsPerAccountId(BankAccount frmBankAccount,BankAccount toBankAccount) throws GeneralBankingException {
+	public synchronized int updateBankAccountsAsPerAccountId(BankAccount frmBankAccount,BankAccount toBankAccount) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		String message=null;
 		Connection connection=null;
+		int result=0;
 		try {
 			connection=H2DatabaseFactory.getConnection();
 			connection.setAutoCommit(false);
@@ -142,14 +144,14 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
                 preparedStatement = connection.prepareStatement(UPDATE_ACC);
                 preparedStatement.setBigDecimal(1, frmBankAccount.getBalance());
                 preparedStatement.setLong(2, frmBankAccount.getBankAccId());
-                preparedStatement.execute();
+                result=preparedStatement.executeUpdate();
             }
 
             if (toBankAccount!=null) {
                 preparedStatement = connection.prepareStatement(UPDATE_ACC);
                 preparedStatement.setBigDecimal(1, toBankAccount.getBalance());
                 preparedStatement.setLong(2, toBankAccount.getBankAccId());
-                preparedStatement.execute();
+                preparedStatement.executeUpdate();
             }
 
             connection.commit();
@@ -171,7 +173,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			DbUtils.closeQuietly(preparedStatement);
 			DbUtils.closeQuietly(connection);
 		}
-		return true;
+		return result;
 	}
 
 	@Override

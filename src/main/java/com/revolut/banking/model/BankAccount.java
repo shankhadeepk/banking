@@ -249,7 +249,7 @@ public class BankAccount {
 
 	public synchronized void deposit(BigDecimal amount) throws GeneralBankingException, BalanceNotEnoughException {
 			if(amount.compareTo(BigDecimal.ZERO) > 0){
-				log.info("Amount to be withdrawn :" + amount + " from balance:" + this.balance);
+				log.info("Amount to be deposited :" + amount + " to balance:" + this.balance);
 				try {
 					Thread.sleep(100);
 					this.balance = this.balance.add(amount);
