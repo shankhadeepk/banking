@@ -14,6 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * BankingTransactionDaoImpl takes of data base operations of transactions/events on the accounts.
+ *
+ */
 public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	
 	static Logger log = Logger.getLogger(BankingTransactionDaoImpl.class.getName());
@@ -25,6 +30,13 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 	private static final String DELETE_TRANSACT = "DELETE FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
 
 
+	/**
+	 *	Save each transactions to database table
+	 *
+	 * @param transaction
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized BankingTransactionnResponse saveTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -64,7 +76,16 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 		else
 			return null;
 	}
-	
+
+	/**
+	 *
+	 * Get information of a transaction as per transaction Id
+	 *
+	 *
+	 * @param transactionId
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	public synchronized List<BankingTransactionnResponse> getTransactions(String transactionId) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
 		ResultSet result = null;

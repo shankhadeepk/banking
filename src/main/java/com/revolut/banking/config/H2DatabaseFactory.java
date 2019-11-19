@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * H2DatabaseFactory initializes the H2 Database
+ * Populates the database with execution of DDL scripts present at location src/main/resources/initialscripts.sql
+ */
 public class H2DatabaseFactory {
 
     static Logger log = Logger.getLogger(H2DatabaseFactory.class.getName());

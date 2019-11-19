@@ -8,6 +8,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * If the account already exists while creation, AccountsAlreadyExists exception is thrown and appropriate message is reverted back
+ */
 @Provider
 public class AccountsAlreadyExists extends Exception implements ExceptionMapper<AccountsAlreadyExists> {
 	

@@ -9,6 +9,11 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 
+/**
+ *
+ * While transfer if the balance is not enough, the exceptions are mapped to this mapper
+ *
+ */
 @Provider
 public class BalanceNotEnoughException extends Exception
         implements ExceptionMapper<AccountNotFoundException> {

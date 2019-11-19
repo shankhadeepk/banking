@@ -1,9 +1,6 @@
 package com.revolut.banking.resources;
 
 import com.google.gson.Gson;
-import com.revolut.banking.model.BankAccount;
-import com.revolut.banking.model.BankingTransactionBuilder;
-import com.revolut.banking.model.BankingTransactionnResponse;
 import com.revolut.banking.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -12,13 +9,10 @@ import org.apache.log4j.Logger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
 
 @Path("/transaction")
 @Api(value = "/transaction", description = "Transaction controller")

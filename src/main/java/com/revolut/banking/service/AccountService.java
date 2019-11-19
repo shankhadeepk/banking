@@ -2,15 +2,15 @@ package com.revolut.banking.service;
 
 import com.revolut.banking.dao.BankingAccountDao;
 import com.revolut.banking.dao.BankingAccountDaoImpl;
-import com.revolut.banking.exceptions.*;
+import com.revolut.banking.exceptions.AccountNotFoundException;
+import com.revolut.banking.exceptions.AccountsAlreadyExists;
+import com.revolut.banking.exceptions.BadAccountRequestException;
 import com.revolut.banking.model.BankAccount;
-import com.revolut.banking.resources.BankingResource;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class AccountService {

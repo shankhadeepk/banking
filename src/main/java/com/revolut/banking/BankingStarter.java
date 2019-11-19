@@ -6,7 +6,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 
-
+/**
+ * Banking starter is the starter class of the application.
+ * It has embedded server, when started deploys the war on the server and starts the server.
+ * initializes the database also
+ */
 public class BankingStarter {
 	
 	static Logger log = Logger.getLogger(BankingStarter.class.getName());

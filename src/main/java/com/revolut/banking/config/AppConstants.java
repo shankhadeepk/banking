@@ -2,6 +2,11 @@ package com.revolut.banking.config;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Application constants class
+ *
+ * All properties records are maintained here
+ */
 public class AppConstants {
 	
 	public static final String DATE_FORMAT="dd-MM-yyyy HH:mm:ss";

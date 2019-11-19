@@ -8,6 +8,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * If the account is not present, AccountNotFoundException exception is thrown and appropriate message is reverted back
+ */
 @Provider
 public class AccountNotFoundException extends Exception
 				implements ExceptionMapper<AccountNotFoundException>{

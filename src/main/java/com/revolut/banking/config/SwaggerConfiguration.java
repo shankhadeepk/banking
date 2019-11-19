@@ -7,6 +7,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+/**
+ * Swagger configuration for the project
+ */
 public class SwaggerConfiguration extends HttpServlet{
 	
 	    static Logger log = Logger.getLogger(SwaggerConfiguration.class.getName());

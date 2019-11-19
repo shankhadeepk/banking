@@ -8,7 +8,6 @@ import com.revolut.banking.resources.BankingResource;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.log4j.Logger;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +15,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO Layer for maintaining database oprations on Accounts of customers.
+ */
 public class BankingAccountDaoImpl implements BankingAccountDao {
 
 	static Logger log = Logger.getLogger(BankingResource.class.getName());
@@ -28,6 +30,13 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 	private static final String UPDATE_ACC="UPDATE BANKACCOUNT SET BALANCE = ? WHERE BANKACCID = ?";
 
 
+	/**
+	 * Get information of all accounts based on Social Security Number (SSID)
+	 *
+	 * @param SSID
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized List<BankAccount> getAccounts(String SSID) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -59,6 +68,14 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		return accounts;
 	}
 
+	/**
+	 *
+	 * Create a New Account
+	 *
+	 * @param account
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized boolean createNewAccount(BankAccount account) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -87,6 +104,16 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 
 		return true;
 	}
+
+
+	/**
+	 *
+	 * Delete all acounts of a customer according to Social Security Number (SSID)
+	 *
+	 * @param SSID
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized boolean deleteBankAccountsAsPerSSID(String SSID) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -109,6 +136,15 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		return true;
 	}
 
+
+	/**
+	 *
+	 * Delete an Account based on account Id
+	 *
+	 * @param accountId
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized int deleteBankAccountsAsPerAccountId(Long accountId) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -131,6 +167,17 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		return result;
 	}
 
+
+	/**
+	 * Update the Account as per Account Id.
+	 * Also update to and from accounts in a transaction, when transferring money.
+	 *
+	 *
+	 * @param frmBankAccount
+	 * @param toBankAccount
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized int updateBankAccountsAsPerAccountId(BankAccount frmBankAccount,BankAccount toBankAccount) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;
@@ -176,6 +223,13 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		return result;
 	}
 
+	/**
+	 * Get information of accounts with accountId
+	 *
+	 * @param bankAccId
+	 * @return
+	 * @throws GeneralBankingException
+	 */
 	@Override
 	public synchronized List<BankAccount> getAccounts(long bankAccId) throws GeneralBankingException {
 		PreparedStatement preparedStatement = null;

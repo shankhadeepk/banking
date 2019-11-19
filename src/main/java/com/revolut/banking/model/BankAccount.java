@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.revolut.banking.exceptions.BalanceNotEnoughException;
 import com.revolut.banking.exceptions.GeneralBankingException;
-import com.revolut.banking.resources.BankingResource;
 import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;

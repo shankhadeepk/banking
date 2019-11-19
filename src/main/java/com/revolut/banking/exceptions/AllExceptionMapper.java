@@ -3,12 +3,14 @@ package com.revolut.banking.exceptions;
 import com.revolut.banking.model.BankingError;
 import org.apache.log4j.Logger;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * All other exceptions are mapped to this exception mapper
+ */
 @Provider
 public class AllExceptionMapper extends Throwable implements ExceptionMapper<Throwable>{
 
