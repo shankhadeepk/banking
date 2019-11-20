@@ -69,17 +69,19 @@ public class BankingResource {
 			@ApiResponse(code=200,message="Account information returned successfully")
 	})
 	public Response getAccount(@PathParam("accId") long bAccountId) throws Exception{
-		log.info("Delete Account");
+		log.info("Get Account");
 		BankingTransactionnResponse bankingTransactionnResponse
 				=new BankingTransactionBuilder()
 				.setTransactionId()
 				.setFromAccount(bAccountId)
 				.setTypeOfTransaction("GET_ACCOUNT")
+				.setStatus("IP")// In progress
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		Optional<List<BankAccount>> bankAccounts=Optional.of(accountsService.getAccounts(bAccountId));
 		BankAccount bankAccount=bankAccounts.get().get(0);
+		bankingTransactionnResponse.setStatus("P");
 		return Response.status(Response.Status.OK).entity(bankAccount).build();
 	}
 
@@ -104,6 +106,7 @@ public class BankingResource {
 							.setTransactionId()
 							.setFromAccHolderName(bAccount.getBankAccHolderName())
 							.setTypeOfTransaction("CREATE_ACCOUNT")
+							.setStatus("IP")
 							.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
@@ -114,6 +117,7 @@ public class BankingResource {
 		BankAccount bankAccount=accountsService.getAccounts(bAccount.getSSID()).stream().
 								filter(bAcc -> bAcc.getAccountType().equals(typeAcc)).collect(Collectors.toList()).get(0);
 		bankingTransactionnResponse.setFromAccount(bankAccount.getBankAccId());
+		bankingTransactionnResponse.setStatus("P");
 		
 		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
 	}
@@ -139,11 +143,13 @@ public class BankingResource {
 				.setTransactionId()
 				.setFromAccount(bAccountId)
 				.setTypeOfTransaction("DELETE_ACCOUNT")
+				.setStatus("IP")
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		accountsService.deleteAccount(bAccountId);
 		bankingTransactionnResponse.setFromAccount(bAccountId);
+		bankingTransactionnResponse.setStatus("P");
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
@@ -171,11 +177,13 @@ public class BankingResource {
 				.setTransactionId()
 				.setFromAccount(bAccountId)
 				.setTypeOfTransaction("UPDATE_BALANCE")
+				.setStatus("IP")
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
 		accountsService.updateAccount(bAccountId, balance);
 		bankingTransactionnResponse.setFromAccount(bAccountId);
+		bankingTransactionnResponse.setStatus("P");
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}
@@ -206,6 +214,7 @@ public class BankingResource {
 				.setFromAccount(fromAccount)
 				.setToAccount(toAccount)
 				.setTypeOfTransaction("TRANSFER_FUND")
+				.setStatus("IP")
 				.build();
 		//Every transaction is saved in database
 		bankingTransactionnResponse=transactionService.createTransaction(bankingTransactionnResponse);
@@ -215,6 +224,9 @@ public class BankingResource {
 		bankingTransactionnResponse.setFromAccount(frmBankAccount.getBankAccId());
 		BankAccount toBankAccount=accountsService.getAccounts(toAccount).get(0);
 		bankingTransactionnResponse.setFromAccount(toBankAccount.getBankAccId());
+		bankingTransactionnResponse.setStatus("P");
+
+		transactionService.updateTransaction(bankingTransactionnResponse);
 
 		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
 	}

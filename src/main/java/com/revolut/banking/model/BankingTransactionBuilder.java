@@ -12,6 +12,7 @@ public class BankingTransactionBuilder {
 	private long toAccount;
 	private String fromAccHolderName;
 	private String toAccountHolderName;
+	private String status;
 	
 	public BankingTransactionBuilder setTransactionId() {
 		StringBuilder transactId=new StringBuilder();
@@ -42,6 +43,12 @@ public class BankingTransactionBuilder {
 		this.toAccountHolderName = toAccountHolderName;
 		return this;
 	}
+
+	public BankingTransactionBuilder setStatus(String status) {
+		this.status = status;
+		return this;
+	}
+
 	public BankingTransactionnResponse build() {
 		return new BankingTransactionnResponse(transactionId,typeOfTransaction,fromAccount,toAccount,fromAccHolderName,toAccountHolderName);
 	}

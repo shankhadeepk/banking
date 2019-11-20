@@ -10,6 +10,7 @@ public class BankingTransactionnResponse {
 	private String toAccountHolderName;
 	private String dateOfCreation;
 	private String dateOfModification;
+	private String status;
 	
 	public BankingTransactionnResponse(String transactionId, String typeOfTransaction, long fromAccount,
 			long toAccount, String fromAccHolderName, String toAccountHolderName) {
@@ -79,6 +80,12 @@ public class BankingTransactionnResponse {
 	}
 	public void setDateOfModification(String dateOfModification) {
 		this.dateOfModification = dateOfModification;
-	}	
-	
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getStatus() {
+		return status;
+	}
 }

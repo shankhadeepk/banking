@@ -48,4 +48,19 @@ public class BankingTransactionDaoImplTest {
 		}
 	}
 
+    @Test
+    public void updateTransaction() {
+        BankingTransactionDao daoImpl=null;
+        BankingTransactionBuilder builder=null;
+        BankingTransactionnResponse transaction=null;
+        try {
+            daoImpl=new BankingTransactionDaoImpl();
+            builder=new BankingTransactionBuilder();
+            transaction = daoImpl.saveTransaction(builder.setTransactionId().setFromAccHolderName("Shankhadeep").setTypeOfTransaction("CREATE").setStatus("IP").build());
+            transaction.setStatus("P");
+            assertNotNull(daoImpl.updateTransaction(transaction));
+        } catch (GeneralBankingException e) {
+            log.error("Error while creating new transaction",e);
+        }
+    }
 }

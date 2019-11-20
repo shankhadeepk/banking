@@ -18,8 +18,7 @@ public class TransactionService {
 	}
 
 	public synchronized BankingTransactionnResponse createTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
-		BankingTransactionnResponse response=bankingTransactionDao.saveTransaction(transaction);
-		return response;
+		return  bankingTransactionDao.saveTransaction(transaction);
 	}
 
 	public synchronized Optional<List<BankingTransactionnResponse>> getAllTransactions() throws GeneralBankingException {
@@ -27,4 +26,7 @@ public class TransactionService {
 		return bankTransactions;
 	}
 
+	public synchronized BankingTransactionnResponse updateTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
+		return bankingTransactionDao.updateTransaction(transaction);
+	}
 }

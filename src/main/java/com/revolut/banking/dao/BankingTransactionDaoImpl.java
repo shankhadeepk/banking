@@ -25,9 +25,10 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 
 	private static final String GET_A_TRANSACT = "SELECT * FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
 	private static final String GET_TRANSACTIONS = "SELECT * FROM BANKTRANSACTION";
-	private static final String NEW_TRANSACT = "INSERT INTO BANKTRANSACTION(TRANSACTIONID,TYPEOFTRANSACTION,FROMACCOUNT,TOACCOUNT,FROMACCHOLDERNAME,TOACCHOLDERNAME) "
-			+ "VALUES(?,?,?,?,?,?)";
+	private static final String NEW_TRANSACT = "INSERT INTO BANKTRANSACTION(TRANSACTIONID,TYPEOFTRANSACTION,FROMACCOUNT,TOACCOUNT,FROMACCHOLDERNAME,TOACCHOLDERNAME,STATUS) "
+			+ "VALUES(?,?,?,?,?,?,?)";
 	private static final String DELETE_TRANSACT = "DELETE FROM BANKTRANSACTION WHERE TRANSACTIONID=?";
+	private static final String UPDATE_TRANSACT = "UPDATE BANKTRANSACTION SET STATUS = ? WHERE  TRANSACTIONID = ?";
 
 
 	/**
@@ -57,6 +58,7 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 				preparedStatement.setLong(4, transaction.getToAccount());
 				preparedStatement.setString(5, transaction.getFromAccHolderName());
 				preparedStatement.setString(6, transaction.getToAccountHolderName());
+				preparedStatement.setString(7,transaction.getStatus());
 				preparedStatement.executeUpdate();
 
 				transactions = getTransactions(transactionId);
@@ -119,14 +121,43 @@ public class BankingTransactionDaoImpl implements BankingTransactionDao {
 
 		return transactions;
 	}
-	
-	private synchronized BankingTransactionnResponse createTransactionFromResult(ResultSet resultSet) throws GeneralBankingException {
+
+    @Override
+    public synchronized BankingTransactionnResponse updateTransaction(BankingTransactionnResponse transaction) throws GeneralBankingException {
+		PreparedStatement preparedStatement = null;
+		Connection connection=null;
+		String message=null;
+		try {
+			connection = H2DatabaseFactory.getConnection();
+
+			String transactionId = transaction.getTransactionId();
+			preparedStatement = connection.prepareStatement(UPDATE_TRANSACT);
+
+			preparedStatement.setString(1, transaction.getStatus());
+			preparedStatement.setString(2, transaction.getTransactionId());
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			message = "Error while getting accounts details";
+			log.error(message, e);
+			throw new GeneralBankingException(message);
+		}finally {
+			DbUtils.closeQuietly(preparedStatement);
+			DbUtils.closeQuietly(connection);
+		}
+
+		return transaction;
+    }
+
+    private synchronized BankingTransactionnResponse createTransactionFromResult(ResultSet resultSet) throws GeneralBankingException {
 		BankingTransactionnResponse transaction = null;
 
 		try {
 			transaction = new BankingTransactionnResponse(resultSet.getString("TRANSACTIONID"), resultSet.getString("TYPEOFTRANSACTION"),
 					resultSet.getLong("FROMACCOUNT"), resultSet.getLong("TOACCOUNT"),
 					resultSet.getString("FROMACCHOLDERNAME"), resultSet.getString("TOACCHOLDERNAME"));
+
+			transaction.setStatus(resultSet.getString("STATUS"));
 			
 			if(resultSet.getTimestamp("CREATE_DATE")!=null)
 				transaction.setDateOfCreation(

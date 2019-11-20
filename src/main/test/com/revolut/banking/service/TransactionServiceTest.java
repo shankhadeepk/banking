@@ -74,4 +74,28 @@ public class TransactionServiceTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void updateTransaction() {
+        try {
+            BankingTransactionnResponse bankingTransactionnResponse
+                    =new BankingTransactionBuilder()
+                    .setTransactionId()
+                    .setFromAccount(1001)
+                    .setTypeOfTransaction("UPDATE_BALANCE")
+                    .build();
+            transactionService.createTransaction(bankingTransactionnResponse);
+            bankingTransactionnResponse
+                    =new BankingTransactionBuilder()
+                    .setTransactionId()
+                    .setFromAccount(1002)
+                    .setTypeOfTransaction("CREATE_ACCOUNT")
+                    .build();
+            transactionService.createTransaction(bankingTransactionnResponse);
+
+            transactionService.getAllTransactions().ifPresent(list -> assertTrue(list.size()>0));
+        } catch (GeneralBankingException e) {
+            e.printStackTrace();
+        }
+    }
 }
