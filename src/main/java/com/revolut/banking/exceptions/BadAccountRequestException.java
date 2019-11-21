@@ -1,5 +1,6 @@
 package com.revolut.banking.exceptions;
 
+import com.google.gson.Gson;
 import com.revolut.banking.model.BankingError;
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,8 @@ public class BadAccountRequestException extends Exception implements ExceptionMa
 	public Response toResponse(BadAccountRequestException exception) {
 		log.error(exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.BAD_REQUEST.name());
-		return Response.status(Response.Status.BAD_REQUEST).entity(error).type(MediaType.APPLICATION_JSON).build();
+		Gson gson=new Gson();
+		return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(error)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 }

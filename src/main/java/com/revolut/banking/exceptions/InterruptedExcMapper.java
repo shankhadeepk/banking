@@ -1,5 +1,6 @@
 package com.revolut.banking.exceptions;
 
+import com.google.gson.Gson;
 import com.revolut.banking.model.BankingError;
 import org.apache.log4j.Logger;
 
@@ -18,7 +19,8 @@ public class InterruptedExcMapper implements ExceptionMapper<InterruptedExceptio
 	public Response toResponse(InterruptedException exception) {
 		log.error(exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.INTERNAL_SERVER_ERROR.name());
-		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error).type(MediaType.APPLICATION_JSON).build();
+		Gson gson=new Gson();
+		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(gson.toJson(error)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 }

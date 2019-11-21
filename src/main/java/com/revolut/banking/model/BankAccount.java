@@ -2,6 +2,7 @@ package com.revolut.banking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.revolut.banking.config.AppConstants;
 import com.revolut.banking.exceptions.BalanceNotEnoughException;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import org.apache.log4j.Logger;
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class BankAccount {
 
@@ -145,7 +147,14 @@ public class BankAccount {
 	}
 
 	public long getBankAccId() {
-		return bankAccId;
+		return this.bankAccId;
+	}
+
+	public void setBankAccId() {
+		StringBuilder accountId=new StringBuilder();
+		long prefix =(long)((Math.random() * 900000)+100000);
+		accountId.append(prefix);
+		this.bankAccId = Long.parseLong(accountId.toString());
 	}
 
 	public String getBankAccHolderName() {
@@ -187,12 +196,11 @@ public class BankAccount {
 	public void setStrAccountType(String strAccountType) {
 		this.strAccountType = strAccountType;
 		
-		if(this.strAccountType.toUpperCase().contains("CURR")) {
+		if(this.strAccountType!=null && this.strAccountType.toUpperCase().contains("CURR")) {
 			this.accountType = BankAccType.CURR;
-		}else if(this.strAccountType.toUpperCase().contains("SAV")) {
+		}else{
 			this.accountType = BankAccType.SAV;
 		}
-		this.setAccountType(this.accountType);
 	}
 	
 	public String getStrStatus() {

@@ -6,15 +6,20 @@ import com.revolut.banking.dao.BankingAccountDaoImpl;
 import com.revolut.banking.exceptions.AccountNotFoundException;
 import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
+import com.revolut.banking.model.BankingTransactionnResponse;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
+import javax.annotation.Priority;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+@FixMethodOrder(MethodSorters.DEFAULT)
 public class AccountServiceTest {
 
     private AccountService accountService;
@@ -50,9 +55,9 @@ public class AccountServiceTest {
         try {
             bankAccount = new BankAccount("Shankhadeep", new BigDecimal(2000.00), "GBP", "shankha@gmail.com" , "M87887", "+917878787789");
             bankAccount.setStrAccountType("CURR");
-            assertNotNull(accountService.createAccount(bankAccount));
-
-            assertTrue(accountService.deleteAccount(1L));
+            BankAccount account=accountService.createAccount(bankAccount);
+            assertNotNull(account);
+            assertTrue(accountService.deleteAccount(account.getBankAccId()));
         } catch (GeneralBankingException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -70,9 +75,10 @@ public class AccountServiceTest {
         try {
             bankAccount = new BankAccount("Shankhadeep", new BigDecimal(2000.00), "GBP", "shankha@gmail.com" , "M87887", "+917878787789");
             bankAccount.setStrAccountType("CURR");
-            assertNotNull(accountService.createAccount(bankAccount));
+            BankAccount account=accountService.createAccount(bankAccount);
+            assertNotNull(account);
 
-            assertTrue(accountService.updateAccount(1L,new BigDecimal(230.0)));
+            assertTrue(accountService.updateAccount(account.getBankAccId(),new BigDecimal(230.0)));
         } catch (GeneralBankingException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -87,16 +93,18 @@ public class AccountServiceTest {
         try {
             bankAccount = new BankAccount("Shankhadeep", new BigDecimal(2000.00), "GBP", "shankha@gmail.com" , "M87887", "+917878787789");
             bankAccount.setStrAccountType("CURR");
-            assertNotNull(accountService.createAccount(bankAccount));
+            BankAccount fromAccount=accountService.createAccount(bankAccount);
+            assertNotNull(fromAccount);
 
             bankAccount = new BankAccount("Shankhadeep", new BigDecimal(1200.00), "GBP", "shankha@gmail.com" , "M87885", "+917878787722");
             bankAccount.setStrAccountType("CURR");
-            assertNotNull(accountService.createAccount(bankAccount));
+            BankAccount toAccount=accountService.createAccount(bankAccount);
+            assertNotNull(toAccount);
 
-            assertTrue(accountService.fundTransfer(1,2,new BigDecimal(230.0)));
+            assertTrue(accountService.fundTransfer(fromAccount.getBankAccId(),toAccount.getBankAccId(),new BigDecimal(230.0)));
 
             bankingDao=new BankingAccountDaoImpl();
-            List<BankAccount> accounts=bankingDao.getAccounts(2);
+            List<BankAccount> accounts=bankingDao.getAccounts(toAccount.getBankAccId());
 
             if(accounts !=null)
             assertTrue(accounts.get(0).getBalance().compareTo(new BigDecimal(1430.00))==0);

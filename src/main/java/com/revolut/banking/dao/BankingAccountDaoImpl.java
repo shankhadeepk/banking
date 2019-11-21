@@ -24,7 +24,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 
 	private static final String GET_ACC_SSID = "SELECT * FROM BANKACCOUNT WHERE SSID = ?";
 	private static final String GET_ACC_ACCID = "SELECT * FROM BANKACCOUNT WHERE  BANKACCID= ?";
-	private static final String NEW_ACC = "INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE) VALUES(?,?,?,?,?,?)";
+	private static final String NEW_ACC = "INSERT INTO BANKACCOUNT(SSID,BANKACCHOLDERNAME,BALANCE,EMAILID,CONTACT,ACCOUNTTYPE,BANKACCID) VALUES(?,?,?,?,?,?,?)";
 	private static final String DELETE_ACC_SSID = "DELETE FROM BANKACCOUNT WHERE SSID = ?";
 	private static final String DELETE_ACC_ACCID = "DELETE FROM BANKACCOUNT WHERE BANKACCID = ?";
 	private static final String UPDATE_ACC="UPDATE BANKACCOUNT SET BALANCE = ? WHERE BANKACCID = ?";
@@ -92,6 +92,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 			preparedStatement.setString(4, account.getEmailId());
 			preparedStatement.setString(5, account.getContact());
 			preparedStatement.setString(6, account.getStrAccountType());
+			preparedStatement.setLong(7,account.getBankAccId());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			message = "Error occured while creating account";
@@ -265,7 +266,7 @@ public class BankingAccountDaoImpl implements BankingAccountDao {
 		BankAccount account = null;
 
 		try {
-			account = new BankAccount(resultSet.getInt("BANKACCID"), resultSet.getString("BANKACCHOLDERNAME"),
+			account = new BankAccount(resultSet.getLong("BANKACCID"), resultSet.getString("BANKACCHOLDERNAME"),
 					resultSet.getBigDecimal("BALANCE"), resultSet.getString("CURRENCYCODE"),
 					resultSet.getString("EMAILID"), resultSet.getString("SSID"), resultSet.getString("CONTACT"));
 

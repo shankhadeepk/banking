@@ -1,5 +1,6 @@
 package com.revolut.banking.exceptions;
 
+import com.google.gson.Gson;
 import com.revolut.banking.model.BankingError;
 import org.apache.log4j.Logger;
 
@@ -20,9 +21,10 @@ public class AllExceptionMapper extends Throwable implements ExceptionMapper<Thr
 	public Response toResponse(Throwable exception) {
 		log.error("Something worst happened",exception);
 		BankingError error=new BankingError(exception.getMessage(),Response.Status.INTERNAL_SERVER_ERROR.name());
-
+		Gson gson=new Gson();
+		log.error("Error Message"+error);
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-		                .entity(error).type(MediaType.APPLICATION_JSON).build();
+		                .entity(gson.toJson(error)).type(MediaType.APPLICATION_JSON).build();
 
 	}
 

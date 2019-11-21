@@ -1,5 +1,6 @@
 package com.revolut.banking.resources;
 
+import com.google.gson.Gson;
 import com.revolut.banking.model.BankAccType;
 import com.revolut.banking.model.BankAccount;
 import com.revolut.banking.model.BankingTransactionBuilder;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
  * 6. 	Transfer Fund POST (/account/from/{fromAccount}/to/{toAccount})
  *
  */
-@Path("/")
+@Path("/account")
 @Api(value = "/", description = "Service for banking")
 public class BankingResource {
 
@@ -62,7 +63,7 @@ public class BankingResource {
 	 * @return
 	 * @throws Exception
 	 */
-	@Path("/account/{accId}")
+	@Path("/{accId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
@@ -82,7 +83,9 @@ public class BankingResource {
 		Optional<List<BankAccount>> bankAccounts=Optional.of(accountsService.getAccounts(bAccountId));
 		BankAccount bankAccount=bankAccounts.get().get(0);
 		bankingTransactionnResponse.setStatus("P");
-		return Response.status(Response.Status.OK).entity(bankAccount).build();
+		transactionService.updateTransaction(bankingTransactionnResponse);
+		Gson gson=new Gson();
+		return Response.status(Response.Status.OK).entity(gson.toJson(bankAccount)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class BankingResource {
 	 * @return
 	 * @throws Exception
 	 */
-	@Path("/account")
+	@Path("/")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -113,13 +116,13 @@ public class BankingResource {
 		//Check if the account with the details already exists.
 		BankAccType typeAcc=bAccount.getAccountType();
 		accountsService.validateAccount(bAccount);
+		bAccount.setBankAccId();
 		accountsService.createAccount(bAccount);
-		BankAccount bankAccount=accountsService.getAccounts(bAccount.getSSID()).stream().
-								filter(bAcc -> bAcc.getAccountType().equals(typeAcc)).collect(Collectors.toList()).get(0);
-		bankingTransactionnResponse.setFromAccount(bankAccount.getBankAccId());
+		bankingTransactionnResponse.setFromAccount(bAccount.getBankAccId());
 		bankingTransactionnResponse.setStatus("P");
-		
-		return Response.status(Response.Status.CREATED).entity(bankingTransactionnResponse).build();
+		transactionService.updateTransaction(bankingTransactionnResponse);
+		Gson gson=new Gson();
+		return Response.status(Response.Status.CREATED).entity(gson.toJson(bankingTransactionnResponse)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	/**
@@ -130,7 +133,7 @@ public class BankingResource {
 	 * @return
 	 * @throws Exception
 	 */
-	@Path("/account/{accId}")
+	@Path("/{accId}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
@@ -150,8 +153,9 @@ public class BankingResource {
 		accountsService.deleteAccount(bAccountId);
 		bankingTransactionnResponse.setFromAccount(bAccountId);
 		bankingTransactionnResponse.setStatus("P");
-
-		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
+		transactionService.updateTransaction(bankingTransactionnResponse);
+		Gson gson=new Gson();
+		return Response.status(Response.Status.OK).entity(gson.toJson(bankingTransactionnResponse)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	/**
@@ -163,7 +167,7 @@ public class BankingResource {
 	 * @return
 	 * @throws Exception
 	 */
-	@Path("/account/{accId}")
+	@Path("/{accId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiResponses(value= {
@@ -184,8 +188,9 @@ public class BankingResource {
 		accountsService.updateAccount(bAccountId, balance);
 		bankingTransactionnResponse.setFromAccount(bAccountId);
 		bankingTransactionnResponse.setStatus("P");
-
-		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
+		transactionService.updateTransaction(bankingTransactionnResponse);
+		Gson gson=new Gson();
+		return Response.status(Response.Status.OK).entity(gson.toJson(bankingTransactionnResponse)).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	/**
@@ -199,7 +204,7 @@ public class BankingResource {
 	 * @return
 	 * @throws Exception
 	 */
-	@Path("/account/from/{fromAccount}/to/{toAccount}")
+	@Path("/from/{fromAccount}/to/{toAccount}")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -225,9 +230,8 @@ public class BankingResource {
 		BankAccount toBankAccount=accountsService.getAccounts(toAccount).get(0);
 		bankingTransactionnResponse.setFromAccount(toBankAccount.getBankAccId());
 		bankingTransactionnResponse.setStatus("P");
-
 		transactionService.updateTransaction(bankingTransactionnResponse);
-
-		return Response.status(Response.Status.OK).entity(bankingTransactionnResponse).build();
+		Gson gson=new Gson();
+		return Response.status(Response.Status.OK).entity(gson.toJson(bankingTransactionnResponse)).type(MediaType.APPLICATION_JSON).build();
 	}
 }

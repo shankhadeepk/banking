@@ -59,6 +59,7 @@ public class TransactionServiceTest {
                     .setTransactionId()
                     .setFromAccount(1001)
                     .setTypeOfTransaction("UPDATE_BALANCE")
+                    .setStatus("IP")
                     .build();
             transactionService.createTransaction(bankingTransactionnResponse);
             bankingTransactionnResponse
@@ -66,9 +67,9 @@ public class TransactionServiceTest {
                     .setTransactionId()
                     .setFromAccount(1002)
                     .setTypeOfTransaction("CREATE_ACCOUNT")
+                    .setStatus("IP")
                     .build();
             transactionService.createTransaction(bankingTransactionnResponse);
-
             transactionService.getAllTransactions().ifPresent(list -> assertTrue(list.size()>0));
         } catch (GeneralBankingException e) {
             e.printStackTrace();
@@ -83,17 +84,12 @@ public class TransactionServiceTest {
                     .setTransactionId()
                     .setFromAccount(1001)
                     .setTypeOfTransaction("UPDATE_BALANCE")
+                    .setStatus("IP")
                     .build();
             transactionService.createTransaction(bankingTransactionnResponse);
-            bankingTransactionnResponse
-                    =new BankingTransactionBuilder()
-                    .setTransactionId()
-                    .setFromAccount(1002)
-                    .setTypeOfTransaction("CREATE_ACCOUNT")
-                    .build();
-            transactionService.createTransaction(bankingTransactionnResponse);
+            bankingTransactionnResponse.setStatus("P");
+            assertNotNull(transactionService.updateTransaction(bankingTransactionnResponse));
 
-            transactionService.getAllTransactions().ifPresent(list -> assertTrue(list.size()>0));
         } catch (GeneralBankingException e) {
             e.printStackTrace();
         }

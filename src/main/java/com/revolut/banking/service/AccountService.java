@@ -5,6 +5,7 @@ import com.revolut.banking.dao.BankingAccountDaoImpl;
 import com.revolut.banking.exceptions.AccountNotFoundException;
 import com.revolut.banking.exceptions.AccountsAlreadyExists;
 import com.revolut.banking.exceptions.BadAccountRequestException;
+import com.revolut.banking.exceptions.GeneralBankingException;
 import com.revolut.banking.model.BankAccount;
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,8 @@ public class AccountService {
 	}
 
 	public synchronized BankAccount createAccount(BankAccount account) throws Exception {
-		bankingDao.createNewAccount(account);
+		if(!bankingDao.createNewAccount(account))
+			throw new GeneralBankingException("Error while creating Account");
 		return account;
 	}
 
