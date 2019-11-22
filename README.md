@@ -29,8 +29,8 @@
 
 ### Operations
 
-Account
 | Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
+|---------------------|----------------|----------------------------------------------------|---------------------------|----------------------------------------------------|
 | CREATE ACCOUNT      | POST           |   /api/account/                                    |     201                   | Create an account and send transaction as response |
 | GET ACCOUNT DETAILS | GET            |   /api/account/{accId}                             |     200                   | Get information of account with account id (accTd) |
 | DELETE ACCOUNT      | DELETE         |   /api/account/{accId}                             |     200                   | Deletes an account with account Id (accId) provided|
@@ -39,6 +39,7 @@ Account
 
 Transaction
 | Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
+|---------------------|----------------|----------------------------------------------------|---------------------------|----------------------------------------------------|
 |GET ALL TRANSACTION  | GET            |   /api/transaction/                                |     200                   | get information of all transactions                |
 
 
