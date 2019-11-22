@@ -42,12 +42,13 @@
 
 
 ### Example
-Create Account
+#### Create Account
 
-Post
+##### Post
 http://localhost:8080/api/account
 
-Request
+##### Request
+```
 {
 	"bankAccHolderName":"Shankha",
 	"balance":"1000",
@@ -57,9 +58,10 @@ Request
 	"contact":"+918787667676",
 	"strAccountType":"SAV"
 }
+```
 
-Response
-
+##### Response
+```
 {
     "transactionId": "2011201923080323246",
     "typeOfTransaction": "CREATE_ACCOUNT",
@@ -71,4 +73,4 @@ Response
     "dateOfModification": "20-11-2019 23:08:03",
     "status": "P"
 }
-
+```
