@@ -15,12 +15,12 @@
     mvn exec:java
 
 
-###Features:
+### Features:
 	For every event transactions are maintained
 	The response corresponds to the transaction that has been triggered
 	Once transaction is processed the status changed to processed.
 
-###Swagger url
+### Swagger url
     http://localhost:8080/api/swagger.json
 
 
