@@ -15,13 +15,34 @@
     mvn exec:java
 
 
-Features:
-	For every transfer transactions are maintained
+###Features:
+	For every event transactions are maintained
+	The response corresponds to the transaction that has been triggered
+	Once transaction is processed the status changed to processed.
+
+###Swagger url
+    http://localhost:8080/api/swagger.json
 
 
-Swagger url
-http://localhost:8080/api/swagger.json
+### Initiation Class of the project
+    com.revolut.banking.BankingStarter
 
+### Operations
+
+Account
+| Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
+| CREATE ACCOUNT      | POST           |   /api/account/                                    |     201                   | Create an account and send transaction as response |
+| GET ACCOUNT DETAILS | GET            |   /api/account/{accId}                             |     200                   | Get information of account with account id (accTd) |
+| DELETE ACCOUNT      | DELETE         |   /api/account/{accId}                             |     200                   | Deletes an account with account Id (accId) provided|
+| UPDATE BALANCE      | PUT            |   /api/account/{accId}                             |     200                   | Add amount to balance                              |
+| TRANSFER FUND       | POST           |   /api/account/from/{fromAccount}/to/{toAccount}   |     200                   | Transfer fund from one account to another          |
+
+Transaction
+| Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
+|GET ALL TRANSACTION  | GET            |   /api/transaction/                                |     200                   | get information of all transactions                |
+
+
+### Example
 Create Account
 
 Post
