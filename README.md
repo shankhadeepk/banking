@@ -31,16 +31,14 @@
 
 | Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
 |---------------------|----------------|----------------------------------------------------|---------------------------|----------------------------------------------------|
+| ACCOUNT  |  |  |  |  |
 | CREATE ACCOUNT      | POST           |   /api/account/                                    |     201                   | Create an account and send transaction as response |
 | GET ACCOUNT DETAILS | GET            |   /api/account/{accId}                             |     200                   | Get information of account with account id (accId) |
 | DELETE ACCOUNT      | DELETE         |   /api/account/{accId}                             |     200                   | Deletes an account with account Id (accId) provided|
 | UPDATE BALANCE      | PUT            |   /api/account/{accId}                             |     200                   | Add amount to balance                              |
 | TRANSFER FUND       | POST           |   /api/account/from/{fromAccount}/to/{toAccount}   |     200                   | Transfer fund from one account to another          |
-
-
-| Operation           | Method         |   Url                                              |     Response status       | Comments                                           |
-|---------------------|----------------|----------------------------------------------------|---------------------------|----------------------------------------------------|
-|GET ALL TRANSACTION  | GET            |   /api/transaction/                                |     200                   | get information of all transactions                |
+| TRANSACTION |  |  |  |  |
+| GET ALL TRANSACTION  | GET            |   /api/transaction/                                |     200                   | get information of all transactions                |
 
 
 ### Example
